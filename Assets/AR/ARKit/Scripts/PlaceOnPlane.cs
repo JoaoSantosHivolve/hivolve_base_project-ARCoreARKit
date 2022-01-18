@@ -12,7 +12,6 @@ namespace UnityEngine.XR.ARFoundation.Samples
     /// If a raycast hits a trackable, the <see cref="placedPrefab"/> is instantiated
     /// and moved to the hit position.
     /// </summary>
-    [RequireComponent(typeof(ARRaycastManager))]
     public class PlaceOnPlane : MonoBehaviour
     {
         [SerializeField]

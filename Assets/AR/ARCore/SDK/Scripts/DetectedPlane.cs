@@ -23,6 +23,7 @@ namespace GoogleARCore
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using GoogleARCore.Examples.Common;
     using GoogleARCoreInternal;
     using UnityEngine;
 
@@ -133,6 +134,8 @@ namespace GoogleARCore
                 return _nativeSession.PlaneApi.GetPlaneType(_trackableNativeHandle);
             }
         }
+
+        public DetectedPlaneVisualizer visualizer;
 
         /// <summary>
         /// Gets a list of points (in clockwise order) in Unity world space representing a boundary

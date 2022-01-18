@@ -201,8 +201,10 @@ namespace GoogleARCore.Examples.Common
         /// </summary>
         private void ClearCachedPoints()
         {
-            _cachedPoints.Clear();
-            _mesh.Clear();
+            if(_cachedPoints != null)
+                _cachedPoints.Clear();
+            if(_mesh != null)
+                _mesh.Clear();
         }
 
         /// <summary>

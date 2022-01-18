@@ -73,7 +73,7 @@ namespace GoogleARCore.Examples.Common
                 return;
             }
 
-            _meshRenderer.enabled = true;
+            //_meshRenderer.enabled = true;
 
             UpdateMeshIfNeeded();
         }
@@ -82,10 +82,13 @@ namespace GoogleARCore.Examples.Common
         /// Initializes the DetectedPlaneVisualizer with a DetectedPlane.
         /// </summary>
         /// <param name="plane">The plane to vizualize.</param>
-        public void Initialize(DetectedPlane plane)
+        public void Initialize(DetectedPlane plane, Color color, Texture texture)
         {
             _detectedPlane = plane;
-            _meshRenderer.material.SetColor("_GridColor", Color.white);
+            _detectedPlane.visualizer = this;
+
+            _meshRenderer.material.mainTexture = texture;
+            _meshRenderer.material.SetColor("_GridColor", color);
             _meshRenderer.material.SetFloat("_UvRotation", Random.Range(0.0f, 360.0f));
 
             Update();

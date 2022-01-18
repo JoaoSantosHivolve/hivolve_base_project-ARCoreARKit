@@ -39,10 +39,10 @@ namespace GoogleARCore.Examples.Common
         /// used across the application to avoid per-frame allocations.
         /// </summary>
         private List<DetectedPlane> _newPlanes = new List<DetectedPlane>();
+        public List<DetectedPlaneVisualizer> _allPlanes = new List<DetectedPlaneVisualizer>();
 
-        /// <summary>
-        /// The Unity Update method.
-        /// </summary>
+        public bool planesAreVisible;
+
         public void Update()
         {
             // Check that motion tracking is tracking.
@@ -59,10 +59,33 @@ namespace GoogleARCore.Examples.Common
                 // Instantiate a plane visualization prefab and set it to track the new plane. The
                 // transform is set to the origin with an identity rotation since the mesh for our
                 // prefab is updated in Unity World coordinates.
-                GameObject planeObject =
-                    Instantiate(DetectedPlanePrefab, Vector3.zero, Quaternion.identity, transform);
-                planeObject.GetComponent<DetectedPlaneVisualizer>().Initialize(_newPlanes[i]);
+
+                // If planes are never to be visible, their color is clear
+                var color = (ArManager.Instance.planesAlwaysHidden || !planesAreVisible) ? Color.clear : ArManager.Instance.planeColor;
+
+                GameObject planeObject = Instantiate(DetectedPlanePrefab, Vector3.zero, Quaternion.identity, transform);
+                var ojectVisualizer = planeObject.GetComponent<DetectedPlaneVisualizer>();
+                ojectVisualizer.Initialize(_newPlanes[i], color, ArManager.Instance.planeTexture);
+                _allPlanes.Add(ojectVisualizer);
             }
+
+            // Get all instantiated planes to set their visibility
+            for (int i = 0; i < _allPlanes.Count; i++)
+            {
+                if(_allPlanes[i] != null)
+                {
+                    _allPlanes[i].GetComponent<MeshRenderer>().enabled = planesAreVisible;
+                }
+            }
+        }
+
+        public void SetVisibility(bool visible)
+        {
+            // If planes are always meant to be invisible, "planesAreVisible" is initialized as false, and is never changed
+            if (ArManager.Instance.planesAlwaysHidden)
+                return;
+
+            planesAreVisible = visible;
         }
     }
 }

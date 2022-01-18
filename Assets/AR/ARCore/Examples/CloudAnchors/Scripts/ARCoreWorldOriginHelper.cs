@@ -64,9 +64,14 @@ namespace GoogleARCore.Examples.CloudAnchors
         /// </summary>
         private Transform _anchorTransform;
 
-        /// <summary>
-        /// The Unity Update() method.
-        /// </summary>
+
+        private ArManager m_Manager;
+
+        private void Awake()
+        {
+            m_Manager = ArManager.Instance;
+        }
+
         public void Update()
         {
             // Check that motion tracking is tracking.
@@ -87,7 +92,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                 // prefab is updated in Unity World coordinates.
                 GameObject planeObject = Instantiate(
                     DetectedPlanePrefab, worldPose.position, worldPose.rotation, transform);
-                planeObject.GetComponent<DetectedPlaneVisualizer>().Initialize(_newPlanes[i]);
+                planeObject.GetComponent<DetectedPlaneVisualizer>().Initialize(_newPlanes[i], m_Manager.planeColor, m_Manager.planeTexture);
 
                 if (!_isOriginPlaced)
                 {

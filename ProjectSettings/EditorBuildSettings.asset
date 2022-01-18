@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/AR/ARCore/Examples/ObjectManipulation/Scenes/ObjectManipulation.unity
-    guid: 9dba7e74f4d2b410f90b920f80528d44
+    path: Assets/BaseScene.unity
+    guid: 455211073e00dd04f8540c6d45e1eeb3
   - enabled: 0
     path: Assets/AR/ARKit/Scenes/ARFoundationMenu/Menu.unity
     guid: 904110ab8cef14f7d96c56ca20774e5a

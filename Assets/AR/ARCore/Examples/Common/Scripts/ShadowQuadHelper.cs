@@ -51,6 +51,9 @@ namespace GoogleARCore.Examples.Common
         /// </summary>
         public void Update()
         {
+            if (_depthMenu == null)
+                return;
+
             // Shadows are cast onto the light estimation shadow plane, which do not respect depth.
             // Shadows are disabled when depth is enabled to prevent undesirable rendering
             // artifacts.

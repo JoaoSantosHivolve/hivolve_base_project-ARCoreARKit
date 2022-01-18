@@ -5,47 +5,60 @@ using UnityEngine.XR.ARFoundation;
 
 namespace UnityEngine.XR.ARFoundation.Samples
 {
-    /// <summary>
-    /// This example demonstrates how to toggle plane detection,
-    /// and also hide or show the existing planes.
-    /// </summary>
-    [RequireComponent(typeof(ARPlaneManager))]
     public class PlaneDetectionController : MonoBehaviour
     {
-        [Tooltip("The UI Text element used to display plane detection messages.")]
-        [SerializeField]
-        Text m_TogglePlaneDetectionText;
+        private ARPlaneManager m_ARPlaneManager;
+        public bool planesAreVisible;
 
-        /// <summary>
-        /// The UI Text element used to display plane detection messages.
-        /// </summary>
-        public Text togglePlaneDetectionText
+        private void Awake()
         {
-            get { return m_TogglePlaneDetectionText; }
-            set { m_TogglePlaneDetectionText = value; }
+            m_ARPlaneManager = GameObject.FindObjectOfType<ARPlaneManager>();
         }
 
-        /// <summary>
-        /// Toggles plane detection and the visualization of the planes.
-        /// </summary>
+        private void LateUpdate()
+        {
+            foreach (var plane in m_ARPlaneManager.trackables)
+            {
+                if(plane != null)
+                {
+                    // Set visibility
+                    plane.gameObject.GetComponent<MeshRenderer>().enabled = planesAreVisible;
+                    plane.gameObject.GetComponent<LineRenderer>().enabled = planesAreVisible;
+
+                    // Set color
+                    var color = ArManager.Instance.planeColor;
+                    plane.gameObject.GetComponent<MeshRenderer>().material.color = color;
+                    plane.gameObject.GetComponent<LineRenderer>().startColor = color;
+                    plane.gameObject.GetComponent<LineRenderer>().endColor = color;
+
+                    // Set texture
+                    var texture = ArManager.Instance.planeTexture;
+                    plane.gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
+                }
+            }
+        }
+
         public void TogglePlaneDetection()
         {
             m_ARPlaneManager.enabled = !m_ARPlaneManager.enabled;
 
-            string planeDetectionMessage = "";
             if (m_ARPlaneManager.enabled)
             {
-                planeDetectionMessage = "Disable Plane Detection and Hide Existing";
                 SetAllPlanesActive(true);
             }
             else
             {
-                planeDetectionMessage = "Enable Plane Detection and Show Existing";
                 SetAllPlanesActive(false);
             }
+        }
 
-            if (togglePlaneDetectionText != null)
-                togglePlaneDetectionText.text = planeDetectionMessage;
+        public void SetVisibility(bool visible)
+        {
+            // If planes are always meant to be invisible, "planesAreVisible" is initialized as false, and is never changed
+            if (ArManager.Instance.planesAlwaysHidden)
+                return;
+
+            planesAreVisible = visible;
         }
 
         /// <summary>
@@ -59,11 +72,7 @@ namespace UnityEngine.XR.ARFoundation.Samples
                 plane.gameObject.SetActive(value);
         }
 
-        void Awake()
-        {
-            m_ARPlaneManager = GetComponent<ARPlaneManager>();
-        }
+        
 
-        ARPlaneManager m_ARPlaneManager;
     }
 }
