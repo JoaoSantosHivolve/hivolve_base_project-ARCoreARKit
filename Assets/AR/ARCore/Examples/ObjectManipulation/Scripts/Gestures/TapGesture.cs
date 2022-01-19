@@ -72,6 +72,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         protected internal override void OnStart()
         {
             RaycastHit hit;
+            Debug.Log("StartPosition = " + StartPosition);
             if (GestureTouchesUtility.RaycastFromCamera(StartPosition, out hit))
             {
                 var gameObject = hit.transform.gameObject;
