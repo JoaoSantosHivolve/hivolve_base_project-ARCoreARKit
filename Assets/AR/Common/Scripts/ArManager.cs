@@ -34,7 +34,6 @@ public class ArManager : Singleton<ArManager>
     [Header("----- Object Placer Settings -----")]
     private ObjectPlacer m_ARCoreObjectPlacer;
     [HideInInspector] public ARRaycastManager arKitRaycaster;
-    private PlaceOnPlane m_ARKitObjectPlacer;
 
     protected override void Awake()
     {
@@ -62,6 +61,7 @@ public class ArManager : Singleton<ArManager>
         // --- OBJECT PLACEMENT INITIALIZATION ---
         // Get components
         m_ARCoreObjectPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
+        arKitRaycaster = GameObject.FindObjectOfType<ARRaycastManager>();
 
         // --- ENABLE CORRECT SECTION
         // Set what section is enabled

@@ -172,49 +172,52 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// <param name="gesture">The current gesture.</param>
         protected override void OnEndManipulation(DragGesture gesture)
         {
-            GameObject oldAnchor = transform.parent.gameObject;
-
-            Pose desiredPose = new Pose(_desiredAnchorPosition, ArManager.Instance.platform == Platform.Android ? _lastHit.Pose.rotation : Quaternion.identity);
-
-            Vector3 desiredLocalPosition =
-                transform.parent.InverseTransformPoint(desiredPose.position);
-
-            if (desiredLocalPosition.magnitude > MaxTranslationDistance)
-            {
-                desiredLocalPosition = desiredLocalPosition.normalized * MaxTranslationDistance;
-            }
-
-            desiredPose.position = transform.parent.TransformPoint(desiredLocalPosition);
-
             if (ArManager.Instance.platform == Platform.Android)
             {
-                Anchor newAnchor = _lastHit.Trackable.CreateAnchor(desiredPose);
-                transform.parent = newAnchor.transform;
-            }
-            else if (ArManager.Instance.platform == Platform.Android)
-            {
-                var anchor = Instantiate(new GameObject(), _desiredAnchorPosition, oldAnchor.transform.rotation);
-                var newAnchor = _lastHit.Trackable.CreateAnchor(desiredPose);
-                transform.parent = newAnchor.transform;
-            }
-     
+                GameObject oldAnchor = transform.parent.gameObject;
 
-            Destroy(oldAnchor);
+                Pose desiredPose = new Pose(_desiredAnchorPosition, ArManager.Instance.platform == Platform.Android ? _lastHit.Pose.rotation : Quaternion.identity);
 
-            _desiredLocalPosition = Vector3.zero;
+                Vector3 desiredLocalPosition =
+                    transform.parent.InverseTransformPoint(desiredPose.position);
 
-            // Rotate if the plane direction has changed.
-            if (((desiredPose.rotation * Vector3.up) - transform.up).magnitude > _diffThreshold)
-            {
-                _desiredRotation = desiredPose.rotation;
+                if (desiredLocalPosition.magnitude > MaxTranslationDistance)
+                {
+                    desiredLocalPosition = desiredLocalPosition.normalized * MaxTranslationDistance;
+                }
+
+                desiredPose.position = transform.parent.TransformPoint(desiredLocalPosition);
+
+                if (ArManager.Instance.platform == Platform.Android)
+                {
+                    Anchor newAnchor = _lastHit.Trackable.CreateAnchor(desiredPose);
+                    transform.parent = newAnchor.transform;
+                }
+                else if (ArManager.Instance.platform == Platform.Android)
+                {
+                    var anchor = Instantiate(new GameObject(), _desiredAnchorPosition, oldAnchor.transform.rotation);
+                    var newAnchor = _lastHit.Trackable.CreateAnchor(desiredPose);
+                    transform.parent = newAnchor.transform;
+                }
+
+
+                Destroy(oldAnchor);
+
+                _desiredLocalPosition = Vector3.zero;
+
+                // Rotate if the plane direction has changed.
+                if (((desiredPose.rotation * Vector3.up) - transform.up).magnitude > _diffThreshold)
+                {
+                    _desiredRotation = desiredPose.rotation;
+                }
+                else
+                {
+                    _desiredRotation = transform.rotation;
+                }
+
+                // Make sure position is updated one last time.
+                _isActive = true;
             }
-            else
-            {
-                _desiredRotation = transform.rotation;
-            }
-
-            // Make sure position is updated one last time.
-            _isActive = true;
         }
 
         private void UpdatePosition()
