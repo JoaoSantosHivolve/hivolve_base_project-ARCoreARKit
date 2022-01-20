@@ -151,6 +151,16 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// </summary>
         public void Update()
         {
+            if (DragGestureRecognizer == null)
+                Debug.Log("DragGestureRecognizer is null");
+            if (PinchGestureRecognizer == null)
+                Debug.Log("PinchGestureRecognizer is null");
+            if (TwoFingerDragGestureRecognizer == null)
+                Debug.Log("TwoFingerDragGestureRecognizer is null");
+            if (TapGestureRecognizer == null)
+                Debug.Log("TapGestureRecognizer is null");
+            if (TwistGestureRecognizer == null)
+                Debug.Log("TwistGestureRecognizer is null");
             DragGestureRecognizer.Update();
             PinchGestureRecognizer.Update();
             TwoFingerDragGestureRecognizer.Update();

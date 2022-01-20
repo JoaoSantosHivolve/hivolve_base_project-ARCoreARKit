@@ -14,7 +14,7 @@ public enum Platform
 
 public class ArManager : Singleton<ArManager>
 {
-    private Platform m_Platform;
+    public Platform platform { get; private set; }
     private GameObject m_ArCoreSection;
     private GameObject m_ArKitSection;
 
@@ -41,9 +41,9 @@ public class ArManager : Singleton<ArManager>
 
         // Set platform
 #if UNITY_ANDROID
-        m_Platform = Platform.Android;
+        platform = Platform.Android;
 #elif UNITY_IOS
-        m_Platform = Platform.IOS;
+        platform = Platform.IOS;
 #endif
         // --- SECTION'S INITIALIZATION ---
         // Get sections GameObject's from children
@@ -64,29 +64,29 @@ public class ArManager : Singleton<ArManager>
 
         // --- ENABLE CORRECT SECTION
         // Set what section is enabled
-        m_ArCoreSection.SetActive(m_Platform == Platform.Android);
-        m_ArKitSection.SetActive(m_Platform == Platform.IOS);
+        m_ArCoreSection.SetActive(platform == Platform.Android);
+        m_ArKitSection.SetActive(platform == Platform.IOS);
     }
 
 
     public void SetPlanesVisibility(bool visible)
     {
-        if (m_Platform == Platform.Android)
+        if (platform == Platform.Android)
         {
             m_ARCorePlaneGenerator.SetVisibility(visible);
         }
-        else if (m_Platform == Platform.IOS)
+        else if (platform == Platform.IOS)
         {
             m_ARKitPlaneGenerator.SetVisibility(visible);
         }
     }
     public void SetObjectToInstantiate(GameObject objectToInstantiate)
     {
-        if (m_Platform == Platform.Android)
+        if (platform == Platform.Android)
         {
             m_ARCoreObjectPlacer.objectToInstantiate = objectToInstantiate;
         }
-        else if (m_Platform == Platform.IOS)
+        else if (platform == Platform.IOS)
         {
 
         }

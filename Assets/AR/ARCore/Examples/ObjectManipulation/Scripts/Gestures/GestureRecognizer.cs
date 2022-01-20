@@ -63,13 +63,21 @@ namespace GoogleARCore.Examples.ObjectManipulationInternal
             // For example, a DragGesture is created when the user touch's down,
             // but doesn't actually start until the touch has moved beyond a threshold.
             TryCreateGestures();
+            //Debug.Log("GestureRecognizer.cs: Reached Update()");
 
-            // Update gestures and determine if they should start.
-            for (int i = 0; i < _gestures.Count; i++)
+            if(_gestures != null)
             {
-                Gesture<T> gesture = _gestures[i];
+                //Debug.Log("GestureRecognizer.cs: _gestures" + _gestures.Count);
+                // Update gestures and determine if they should start.
+                if (_gestures.Count == 0)
+                    return;
 
-                gesture.Update();
+                for (int i = 0; i < _gestures.Count; i++)
+                {
+                    Gesture<T> gesture = _gestures[i];
+
+                    gesture.Update();
+                }
             }
         }
 
@@ -174,7 +182,10 @@ namespace GoogleARCore.Examples.ObjectManipulationInternal
 
         private void OnFinished(T gesture)
         {
-            _gestures.Remove(gesture);
+            if(_gestures != null)
+            {
+                _gestures.Remove(gesture);
+            }
         }
     }
 }
