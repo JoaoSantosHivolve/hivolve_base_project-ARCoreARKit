@@ -21,7 +21,10 @@
 namespace GoogleARCore.Examples.ObjectManipulation
 {
     using GoogleARCore.Examples.ObjectManipulationInternal;
+    using System.Collections.Generic;
     using UnityEngine;
+    using UnityEngine.XR.ARFoundation;
+    using UnityEngine.XR.ARSubsystems;
 
     /// <summary>
     /// Manipulates the position of an object via a drag gesture.
@@ -49,6 +52,8 @@ namespace GoogleARCore.Examples.ObjectManipulation
         private Quaternion _desiredRotation;
         private float _groundingPlaneHeight;
         private TrackableHit _lastHit;
+
+        private static List<ARRaycastHit> s_Hits = new List<ARRaycastHit>();
 
         /// <summary>
         /// The Unity's Start method.
@@ -97,7 +102,10 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// <param name="gesture">The current gesture.</param>
         protected override void OnStartManipulation(DragGesture gesture)
         {
-            _groundingPlaneHeight = transform.parent.position.y;
+            if (ArManager.Instance.platform == Platform.Android)
+            {
+                _groundingPlaneHeight = transform.parent.position.y;
+            }
         }
 
         /// <summary>
@@ -106,42 +114,54 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// <param name="gesture">The current gesture.</param>
         protected override void OnContinueManipulation(DragGesture gesture)
         {
-            _isActive = true;
-
-            TransformationUtility.Placement desiredPlacement =
-                TransformationUtility.GetBestPlacementPosition(
-                    transform.parent.position, gesture.Position, _groundingPlaneHeight, 0.03f,
-                    MaxTranslationDistance, ObjectTranslationMode);
-
-            if (desiredPlacement.HoveringPosition.HasValue &&
-                desiredPlacement.PlacementPosition.HasValue)
+            if (ArManager.Instance.platform == Platform.Android)
             {
-                // If desired position is lower than current position, don't drop it until it's
-                // finished.
-                _desiredLocalPosition = transform.parent.InverseTransformPoint(
-                    desiredPlacement.HoveringPosition.Value);
+                _isActive = true;
 
-                _desiredAnchorPosition = desiredPlacement.PlacementPosition.Value;
+                TransformationUtility.Placement desiredPlacement =
+                    TransformationUtility.GetBestPlacementPosition(
+                        transform.parent.position, gesture.Position, _groundingPlaneHeight, 0.03f,
+                        MaxTranslationDistance, ObjectTranslationMode);
 
-                _groundingPlaneHeight = desiredPlacement.UpdatedGroundingPlaneHeight;
-
-                if (desiredPlacement.PlacementRotation.HasValue)
+                if (desiredPlacement.HoveringPosition.HasValue &&
+                    desiredPlacement.PlacementPosition.HasValue)
                 {
-                    // Rotate if the plane direction has changed.
-                    if (((desiredPlacement.PlacementRotation.Value * Vector3.up) - transform.up)
-                        .magnitude > _diffThreshold)
+                    // If desired position is lower than current position, don't drop it until it's
+                    // finished.
+                    _desiredLocalPosition = transform.parent.InverseTransformPoint(
+                        desiredPlacement.HoveringPosition.Value);
+
+                    _desiredAnchorPosition = desiredPlacement.PlacementPosition.Value;
+
+                    _groundingPlaneHeight = desiredPlacement.UpdatedGroundingPlaneHeight;
+
+                    if (desiredPlacement.PlacementRotation.HasValue)
                     {
-                        _desiredRotation = desiredPlacement.PlacementRotation.Value;
+                        // Rotate if the plane direction has changed.
+                        if (((desiredPlacement.PlacementRotation.Value * Vector3.up) - transform.up)
+                            .magnitude > _diffThreshold)
+                        {
+                            _desiredRotation = desiredPlacement.PlacementRotation.Value;
+                        }
+                        else
+                        {
+                            _desiredRotation = transform.rotation;
+                        }
                     }
-                    else
+
+                    if (desiredPlacement.PlacementPlane.HasValue)
                     {
-                        _desiredRotation = transform.rotation;
+                        _lastHit = desiredPlacement.PlacementPlane.Value;
                     }
                 }
-
-                if (desiredPlacement.PlacementPlane.HasValue)
+            }
+            else if (ArManager.Instance.platform == Platform.IOS)
+            {
+                if (ArManager.Instance.arKitRaycaster.Raycast(gesture.Position, s_Hits, TrackableType.PlaneWithinPolygon))
                 {
-                    _lastHit = desiredPlacement.PlacementPlane.Value;
+                    var hitPose = s_Hits[0].pose;
+
+                    transform.parent.position = hitPose.position;
                 }
             }
         }
@@ -199,36 +219,39 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
         private void UpdatePosition()
         {
-            if (!_isActive)
+            if(ArManager.Instance.platform == Platform.Android)
             {
-                return;
+                if (!_isActive)
+                {
+                    return;
+                }
+
+                // Lerp position.
+                Vector3 oldLocalPosition = transform.localPosition;
+                Vector3 newLocalPosition = Vector3.Lerp(
+                    oldLocalPosition, _desiredLocalPosition, Time.deltaTime * _positionSpeed);
+
+                float diffLenght = (_desiredLocalPosition - newLocalPosition).magnitude;
+                if (diffLenght < _diffThreshold)
+                {
+                    newLocalPosition = _desiredLocalPosition;
+                    _isActive = false;
+                }
+
+                transform.localPosition = newLocalPosition;
+
+                // Lerp rotation.
+                Quaternion oldRotation = transform.rotation;
+                Quaternion newRotation =
+                    Quaternion.Lerp(oldRotation, _desiredRotation, Time.deltaTime * _positionSpeed);
+                transform.rotation = newRotation;
+
+                // Avoid placing the selection higher than the object if the anchor is higher than the
+                // object.
+                float newElevation =
+                    Mathf.Max(0, -transform.InverseTransformPoint(_desiredAnchorPosition).y);
+                GetComponent<SelectionManipulator>().OnElevationChanged(newElevation);
             }
-
-            // Lerp position.
-            Vector3 oldLocalPosition = transform.localPosition;
-            Vector3 newLocalPosition = Vector3.Lerp(
-                oldLocalPosition, _desiredLocalPosition, Time.deltaTime * _positionSpeed);
-
-            float diffLenght = (_desiredLocalPosition - newLocalPosition).magnitude;
-            if (diffLenght < _diffThreshold)
-            {
-                newLocalPosition = _desiredLocalPosition;
-                _isActive = false;
-            }
-
-            transform.localPosition = newLocalPosition;
-
-            // Lerp rotation.
-            Quaternion oldRotation = transform.rotation;
-            Quaternion newRotation =
-                Quaternion.Lerp(oldRotation, _desiredRotation, Time.deltaTime * _positionSpeed);
-            transform.rotation = newRotation;
-
-            // Avoid placing the selection higher than the object if the anchor is higher than the
-            // object.
-            float newElevation =
-                Mathf.Max(0, -transform.InverseTransformPoint(_desiredAnchorPosition).y);
-            GetComponent<SelectionManipulator>().OnElevationChanged(newElevation);
         }
     }
 }

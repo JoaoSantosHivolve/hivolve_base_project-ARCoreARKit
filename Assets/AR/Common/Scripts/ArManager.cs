@@ -33,6 +33,7 @@ public class ArManager : Singleton<ArManager>
 
     [Header("----- Object Placer Settings -----")]
     private ObjectPlacer m_ARCoreObjectPlacer;
+    [HideInInspector] public ARRaycastManager arKitRaycaster;
     private PlaceOnPlane m_ARKitObjectPlacer;
 
     protected override void Awake()
