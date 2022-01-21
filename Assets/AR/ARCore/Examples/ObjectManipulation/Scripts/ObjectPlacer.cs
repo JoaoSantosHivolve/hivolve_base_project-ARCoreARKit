@@ -29,56 +29,79 @@ namespace GoogleARCore.Examples.ObjectManipulation
     public class ObjectPlacer : Manipulator
     {
         private Camera m_FirstPersonCamera;
-
         public GameObject objectToInstantiate;
-
-        /// <summary>
-        /// Manipulator prefab to attach placed objects to.
-        /// </summary>
         public GameObject ManipulatorPrefab;
 
         static List<ARRaycastHit> s_Hits = new List<ARRaycastHit>();
         ARRaycastManager m_RaycastManager;
 
+        [SerializeField] private List<GameObject> m_PlacedObjects = new List<GameObject>();
+        public int PlacedObjectsCount
+        {
+            get 
+            {
+                var count = 0;
+
+                foreach (var item in m_PlacedObjects)
+                {
+                    if (item != null)
+                        count++;
+                }
+
+                return count;
+            }
+        }
+
         private void Awake()
         {
+            // Get main camera
             m_FirstPersonCamera = Camera.main;
+        }
+
+        private void Update()
+        {
+            // ----- CONTROL PLANE VISIBILITY -----
+            // Hide planes if the setting is enabled -- On Update for bug prevention - Not Optimized
+            if(PlacedObjectsCount > 0)
+            {
+                if (ArManager.Instance.planesVisibility == PlanesVisibility.HideOnObjectPlacement)
+                {
+                    ArManager.Instance.SetPlanesVisibility(false);
+                }
+            }
+            // Show planes again if they are meant to
+            else 
+            {
+                if (ArManager.Instance.planesVisibility != PlanesVisibility.AlwaysHide)
+                {
+                    ArManager.Instance.SetPlanesVisibility(true);
+                }
+            }
+            // ----- -----
         }
 
         protected override bool CanStartManipulationForGesture(TapGesture gesture)
         {
-            Debug.Log("ObjectPlacer: can start");
             if (gesture.TargetObject == null)
             {
-                Debug.Log("ObjectPlacer: can start true");
                 return true;
             }
-            Debug.Log("ObjectPlacer: can start false");
             return false;
         }
-
-        /// <summary>
-        /// Function called when the manipulation is ended.
-        /// </summary>
-        /// <param name="gesture">The current gesture.</param>
         protected override void OnEndManipulation(TapGesture gesture)
         {
-            Debug.Log("ObjectPlacer: 1");
             if (gesture.WasCancelled)
             {
                 return;
             }
-            Debug.Log("ObjectPlacer: 2");
             // If gesture is targeting an existing object we are done.
             if (gesture.TargetObject != null)
             {
                 return;
             }
-            Debug.Log("ObjectPlacer: 3");
             // --- Raycast Android
             if (ArManager.Instance.platform == Platform.Android)
             {
-                Debug.Log("ObjectPlacer: 4");
                 if (Frame.Raycast(gesture.StartPosition.x, gesture.StartPosition.y, TrackableHitFlags.PlaneWithinPolygon, out var hit))
                 {
                     // Use hit pose and camera pose to check if hittest is from the
@@ -98,16 +121,12 @@ namespace GoogleARCore.Examples.ObjectManipulation
             // --- Raycast iOS
             else if (ArManager.Instance.platform == Platform.IOS)
             {
-                    Debug.Log("ObjectPlacer: 5");
                 if(Physics.Raycast(Camera.main.ScreenToWorldPoint(gesture.StartPosition), Camera.main.transform.forward, out var hit))
                 {
-                    Debug.Log("ObjectPlacer: 6");
                     if (hit.collider.gameObject != null)
                     {
-                        Debug.Log("ObjectPlacer: 7");
                         if (hit.collider.gameObject.GetComponent<ARPlane>() != null)
                         {
-                            Debug.Log("ObjectPlacer: 8");
                             PlaceObject(hit.point, Quaternion.identity, new TrackableHit());
                         }
                     }
@@ -136,8 +155,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
             // Make game object a child of the manipulator.
             gameObject.transform.parent = manipulator.transform;
 
-            // Create an anchor to allow ARCore to track the hitpoint as understanding of
-            // the physical world evolves.
+            // Create anchor based on selected platform
             if (ArManager.Instance.platform == Platform.Android)
             {
                 var anchor = hit.Trackable.CreateAnchor(hit.Pose);
@@ -152,20 +170,40 @@ namespace GoogleARCore.Examples.ObjectManipulation
             // Select the placed object.
             manipulator.GetComponent<Manipulator>().Select();
 
-            // Hide planes if the setting is enabled
-            if (ArManager.Instance.hidePlanesOnObjectPlacement)
+            // Add new placed object to list - Manipulator parent ( anchor )
+            m_PlacedObjects.Add(manipulator.transform.parent.gameObject);
+        }
+
+        public void DeleteAllObjects()
+        {
+            for (int i = 0; i < m_PlacedObjects.Count; i++)
             {
-                ArManager.Instance.SetPlanesVisibility(false);
+                Destroy(m_PlacedObjects[i]);
             }
+
+            m_PlacedObjects = new List<GameObject>();
+        }
+        public void DeleteSelectedObject()
+        {
+            // Remove object from placed objects list
+            m_PlacedObjects.Remove(ManipulationSystem.Instance.SelectedObject);
+
+            // Destroy object
+            Destroy(ManipulationSystem.Instance.SelectedObject);
+
+            // Set selected object to null
+            ManipulationSystem.Instance.Deselect();
         }
     }
+
     /*
     Android:
         1.Anchor
             2.Manipulator
                 3.Object
     iOS:
-        1.Manipulator
-            2.Object
+        1.Empty GameObject (makes arcore manipulators easier to work with, and object deletion easier too) 
+            2.Manipulator
+                3.Object
      */
 }

@@ -55,7 +55,7 @@ namespace UnityEngine.XR.ARFoundation.Samples
         public void SetVisibility(bool visible)
         {
             // If planes are always meant to be invisible, "planesAreVisible" is initialized as false, and is never changed
-            if (ArManager.Instance.planesAlwaysHidden)
+            if (ArManager.Instance.planesVisibility == PlanesVisibility.AlwaysHide)
                 return;
 
             planesAreVisible = visible;

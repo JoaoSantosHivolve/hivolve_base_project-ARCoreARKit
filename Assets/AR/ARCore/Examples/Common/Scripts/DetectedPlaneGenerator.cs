@@ -61,7 +61,7 @@ namespace GoogleARCore.Examples.Common
                 // prefab is updated in Unity World coordinates.
 
                 // If planes are never to be visible, their color is clear
-                var color = (ArManager.Instance.planesAlwaysHidden || !planesAreVisible) ? Color.clear : ArManager.Instance.planeColor;
+                var color = (ArManager.Instance.planesVisibility == PlanesVisibility.AlwaysHide) ? Color.clear : ArManager.Instance.planeColor;
 
                 GameObject planeObject = Instantiate(DetectedPlanePrefab, Vector3.zero, Quaternion.identity, transform);
                 var ojectVisualizer = planeObject.GetComponent<DetectedPlaneVisualizer>();
@@ -82,7 +82,7 @@ namespace GoogleARCore.Examples.Common
         public void SetVisibility(bool visible)
         {
             // If planes are always meant to be invisible, "planesAreVisible" is initialized as false, and is never changed
-            if (ArManager.Instance.planesAlwaysHidden)
+            if (ArManager.Instance.planesVisibility == PlanesVisibility.AlwaysHide)
                 return;
 
             planesAreVisible = visible;

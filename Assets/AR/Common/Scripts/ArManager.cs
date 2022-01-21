@@ -9,7 +9,13 @@ using UnityEngine.XR.ARFoundation.Samples;
 public enum Platform
 {
     Android,
-    IOS,
+    IOS
+}
+public enum PlanesVisibility
+{
+    AlwaysVisible,
+    HideOnObjectPlacement,
+    AlwaysHide
 }
 
 public class ArManager : Singleton<ArManager>
@@ -24,15 +30,13 @@ public class ArManager : Singleton<ArManager>
     public Color planeColor;
     [Tooltip("Texture used on generated planes")]
     public Texture planeTexture;
-    [Tooltip("Controls if planes are ever visible during the application")]
-    public bool planesAlwaysHidden;
-    [Tooltip("Controls if planes become invisble after placing an object")]
-    public bool hidePlanesOnObjectPlacement;
+    [Tooltip("Controls the planes visibility during the experince")]
+    public PlanesVisibility planesVisibility;
     private DetectedPlaneGenerator m_ARCorePlaneGenerator;
     private PlaneDetectionController m_ARKitPlaneGenerator;
 
     [Header("----- Object Placer Settings -----")]
-    private ObjectPlacer m_ARCoreObjectPlacer;
+    private ObjectPlacer m_ObjectPlacer;
     [HideInInspector] public ARRaycastManager arKitRaycaster;
 
     protected override void Awake()
@@ -55,12 +59,12 @@ public class ArManager : Singleton<ArManager>
         m_ARCorePlaneGenerator = GameObject.FindObjectOfType<DetectedPlaneGenerator>();
         m_ARKitPlaneGenerator = GameObject.FindObjectOfType<PlaneDetectionController>();
         // Initialize components
-        m_ARCorePlaneGenerator.planesAreVisible = !planesAlwaysHidden;
-        m_ARKitPlaneGenerator.planesAreVisible = !planesAlwaysHidden;
+        m_ARCorePlaneGenerator.planesAreVisible = planesVisibility != PlanesVisibility.AlwaysHide;
+        m_ARKitPlaneGenerator.planesAreVisible = planesVisibility != PlanesVisibility.AlwaysHide;
 
         // --- OBJECT PLACEMENT INITIALIZATION ---
         // Get components
-        m_ARCoreObjectPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
+        m_ObjectPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
         arKitRaycaster = GameObject.FindObjectOfType<ARRaycastManager>();
 
         // --- ENABLE CORRECT SECTION
@@ -81,16 +85,9 @@ public class ArManager : Singleton<ArManager>
             m_ARKitPlaneGenerator.SetVisibility(visible);
         }
     }
-    public void SetObjectToInstantiate(GameObject objectToInstantiate)
-    {
-        if (platform == Platform.Android)
-        {
-            m_ARCoreObjectPlacer.objectToInstantiate = objectToInstantiate;
-        }
-        else if (platform == Platform.IOS)
-        {
-
-        }
-    }
+    public void SetObjectToInstantiate(GameObject objectToInstantiate) => m_ObjectPlacer.objectToInstantiate = objectToInstantiate;
+    public void DeselectObject() => ManipulationSystem.Instance.Deselect();
+    public void DeleteAllObjects() => m_ObjectPlacer.DeleteAllObjects();
+    public void DeleteSelectedObject() => m_ObjectPlacer.DeleteSelectedObject();
 
 }
