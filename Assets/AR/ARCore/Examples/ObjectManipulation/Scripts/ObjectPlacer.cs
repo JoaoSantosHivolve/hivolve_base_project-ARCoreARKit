@@ -23,6 +23,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
     using GoogleARCore;
     using System.Collections.Generic;
     using UnityEngine;
+    using UnityEngine.EventSystems;
     using UnityEngine.XR.ARFoundation;
     using UnityEngine.XR.ARSubsystems;
 
@@ -36,21 +37,6 @@ namespace GoogleARCore.Examples.ObjectManipulation
         ARRaycastManager m_RaycastManager;
 
         [SerializeField] private List<GameObject> m_PlacedObjects = new List<GameObject>();
-        public int PlacedObjectsCount
-        {
-            get 
-            {
-                var count = 0;
-
-                foreach (var item in m_PlacedObjects)
-                {
-                    if (item != null)
-                        count++;
-                }
-
-                return count;
-            }
-        }
 
         private void Awake()
         {
@@ -58,11 +44,13 @@ namespace GoogleARCore.Examples.ObjectManipulation
             m_FirstPersonCamera = Camera.main;
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
+
             // ----- CONTROL PLANE VISIBILITY -----
             // Hide planes if the setting is enabled -- On Update for bug prevention - Not Optimized
-            if(PlacedObjectsCount > 0)
+            if(m_PlacedObjects.Count > 0)
             {
                 if (ArManager.Instance.planesVisibility == PlanesVisibility.HideOnObjectPlacement)
                 {
@@ -90,16 +78,30 @@ namespace GoogleARCore.Examples.ObjectManipulation
         }
         protected override void OnEndManipulation(TapGesture gesture)
         {
+            if (objectToInstantiate == null)
+                return;
+
             if (gesture.WasCancelled)
             {
                 return;
             }
+
+            // ----- UI Detection -----
+            if (IsPointerOverUIObject())
+                return;
+
+            // ----- Object Detection -----
             // If gesture is targeting an existing object we are done.
             if (gesture.TargetObject != null)
-            {
                 return;
-            }
-            // --- Raycast Android
+            // Double Check object targetting
+            if (IsPointerOverGameObject(gesture.StartPosition))
+                return;
+            // Check if is inside Object
+            if (IsPointerInsideObject(gesture.StartPosition))
+                return;
+
+            // ----- Raycast Android -----
             if (ArManager.Instance.platform == Platform.Android)
             {
                 if (Frame.Raycast(gesture.StartPosition.x, gesture.StartPosition.y, TrackableHitFlags.PlaneWithinPolygon, out var hit))
@@ -118,7 +120,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
                     }
                 }
             }
-            // --- Raycast iOS
+            // ----- Raycast iOS -----
             else if (ArManager.Instance.platform == Platform.IOS)
             {
                 if(Physics.Raycast(Camera.main.ScreenToWorldPoint(gesture.StartPosition), Camera.main.transform.forward, out var hit))
@@ -131,29 +133,64 @@ namespace GoogleARCore.Examples.ObjectManipulation
                         }
                     }
                 }
-               //if (Frame.Raycast(gesture.StartPosition.x, gesture.StartPosition.y, TrackableHitFlags.PlaneWithinPolygon, out var hit))
-               //{
-               // //   if (m_RaycastManager.Raycast(gesture.StartPosition, s_Hits, TrackableType.PlaneWithinPolygon))
-               // //{
-               //    Debug.Log("ObjectPlacer: 6");
-               //    //var hitPose = s_Hits[0].pose;
-               //    //PlaceObject(hitPose.position, hitPose.rotation, new TrackableHit());
-               //    PlaceObject(hit.Pose.position, hit.Pose.rotation, new TrackableHit());
-               //}
             }
+        }
+
+        private static bool IsPointerOverUiObject(TapGesture gesture)
+        {
+            // Referencing this code for GraphicRaycaster https://gist.github.com/stramit/ead7ca1f432f3c0f181f
+            // the ray cast appears to require only eventData.position.
+            var eventDataCurrentPosition = new PointerEventData(EventSystem.current)
+            {
+                position = new Vector2(gesture.StartPosition.x, gesture.StartPosition.y)
+            };
+
+            var results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+            return results.Count > 0;
+        }
+        private bool IsPointerOverUIObject()
+        {
+            PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+            eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+            return results.Count > 0;
+        }
+        private bool IsPointerOverGameObject(Vector2 position)
+        {
+            var ray = Camera.main.ScreenPointToRay(position);
+
+            return Physics.Raycast(ray, out var hit) ? hit.transform.parent.GetComponent<Manipulator>() : false;
+        }
+        private bool IsPointerInsideObject(Vector2 position)
+        {
+            var ray = Camera.main.ScreenPointToRay(position);
+            ray.origin = ray.GetPoint(100);
+            ray.direction = -ray.direction;
+
+            if (Physics.Raycast(ray, out var hit))
+            {
+                if (hit.transform.parent.GetComponent<Manipulator>())
+                {
+                    hit.transform.parent.GetComponent<Manipulator>().Select();
+                    return true;
+                }
+                else return false;
+            }
+            else return false;
         }
 
         private void PlaceObject(Vector3 position, Quaternion rotation, TrackableHit hit)
         {
-            Debug.Log("ObjectPlacer: Final");
             // Instantiate game object at the hit pose.
-            var gameObject = Instantiate(objectToInstantiate, position, rotation);
+            var placedObject = Instantiate(objectToInstantiate, position, rotation);
 
             // Instantiate manipulator.
             var manipulator = Instantiate(ManipulatorPrefab, position, rotation);
 
             // Make game object a child of the manipulator.
-            gameObject.transform.parent = manipulator.transform;
+            placedObject.transform.parent = manipulator.transform;
 
             // Create anchor based on selected platform
             if (ArManager.Instance.platform == Platform.Android)
@@ -172,6 +209,19 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
             // Add new placed object to list - Manipulator parent ( anchor )
             m_PlacedObjects.Add(manipulator.transform.parent.gameObject);
+
+            // Set selection visualizer sprite and color
+            placedObject.GetComponent<PlacedObjectManager>().SetSelectionVisualizerColor(ArManager.Instance.selectionVisualizerColor);
+            placedObject.GetComponent<PlacedObjectManager>().SetSelectionVisualizerSprite(ArManager.Instance.selectioVisualizerSprite);
+
+            // Object face camera
+            if (ArManager.Instance.objectFaceCameraOnPlacement)
+            {
+                placedObject.transform.LookAt(Camera.main.transform.position);
+                var lea = transform.localEulerAngles;
+                lea.z = 0; lea.x = 0;
+                placedObject.transform.localEulerAngles = lea;
+            }
         }
 
         public void DeleteAllObjects()

@@ -88,9 +88,6 @@ namespace GoogleARCore.Examples.ObjectManipulationInternal
 
             if (_hasStarted)
             {
-                if (onUpdated == null)
-                    Debug.Log("Gesture.cs onUpdated is NUll");
-
                 if (UpdateGesture() && onUpdated != null)
                 {
                     onUpdated(this as T);
@@ -150,7 +147,6 @@ namespace GoogleARCore.Examples.ObjectManipulationInternal
         private void Start()
         {
             _hasStarted = true;
-            Debug.Log("Gesture.cs reached Start()");
             OnStart();
             if (onStart != null)
             {

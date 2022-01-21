@@ -42,7 +42,7 @@ namespace GoogleARCore.Examples.Common
         /// </summary>
         public void Start()
         {
-            _shadowQuad = this.gameObject.transform.Find("ShadowQuad").gameObject;
+            _shadowQuad = this.gameObject.transform.Find("Shadow").gameObject;
             _depthMenu = FindObjectOfType<DepthMenu>();
         }
 

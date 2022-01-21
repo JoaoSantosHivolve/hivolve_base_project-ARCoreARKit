@@ -23,19 +23,24 @@ public class ArManager : Singleton<ArManager>
     public Platform platform { get; private set; }
     private GameObject m_ArCoreSection;
     private GameObject m_ArKitSection;
-
     
     [Header("----- Plane Generation Settings -----")]
-    [Tooltip("Color of generated planes")]
     public Color planeColor;
-    [Tooltip("Texture used on generated planes")]
-    public Texture planeTexture;
-    [Tooltip("Controls the planes visibility during the experince")]
+    public Texture planeTextureARCore;
+    public Texture planeTextureARKit;
     public PlanesVisibility planesVisibility;
     private DetectedPlaneGenerator m_ARCorePlaneGenerator;
     private PlaneDetectionController m_ARKitPlaneGenerator;
 
+    [Header("----- Point Cloud Settings -----")]
+    public Color pointCloudColor;
+    private PointcloudVisualizer m_ARCorePointCloudVisualizer;
+    private ARPointCloudManager m_ARKitPointCloudVisualizer;
+
     [Header("----- Object Placer Settings -----")]
+    public Sprite selectioVisualizerSprite;
+    public Color selectionVisualizerColor;
+    public bool objectFaceCameraOnPlacement;
     private ObjectPlacer m_ObjectPlacer;
     [HideInInspector] public ARRaycastManager arKitRaycaster;
 
@@ -49,26 +54,27 @@ public class ArManager : Singleton<ArManager>
 #elif UNITY_IOS
         platform = Platform.IOS;
 #endif
-        // --- SECTION'S INITIALIZATION ---
-        // Get sections GameObject's from children
+        // ----- SECTION'S INITIALIZATION -----
         m_ArCoreSection = transform.GetChild(0).gameObject;
         m_ArKitSection = transform.GetChild(1).gameObject;
 
-        // --- PLANE GENERATION INITIALIZATION ---
-        // Get components
+        // ----- PLANE GENERATION INITIALIZATION -----
         m_ARCorePlaneGenerator = GameObject.FindObjectOfType<DetectedPlaneGenerator>();
         m_ARKitPlaneGenerator = GameObject.FindObjectOfType<PlaneDetectionController>();
-        // Initialize components
         m_ARCorePlaneGenerator.planesAreVisible = planesVisibility != PlanesVisibility.AlwaysHide;
         m_ARKitPlaneGenerator.planesAreVisible = planesVisibility != PlanesVisibility.AlwaysHide;
 
-        // --- OBJECT PLACEMENT INITIALIZATION ---
-        // Get components
+        // ----- POINT CLOUD INITIALIZATION -----
+        m_ARCorePointCloudVisualizer = GameObject.FindObjectOfType<PointcloudVisualizer>();
+        m_ARKitPointCloudVisualizer = GameObject.FindObjectOfType<ARPointCloudManager>();
+        m_ARCorePointCloudVisualizer.PointColor = pointCloudColor;
+        //TODO: ARKit
+
+        // ----- OBJECT PLACEMENT INITIALIZATION -----
         m_ObjectPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
         arKitRaycaster = GameObject.FindObjectOfType<ARRaycastManager>();
 
-        // --- ENABLE CORRECT SECTION
-        // Set what section is enabled
+        // ----- ENABLE CORRECT SECTION -----
         m_ArCoreSection.SetActive(platform == Platform.Android);
         m_ArKitSection.SetActive(platform == Platform.IOS);
     }

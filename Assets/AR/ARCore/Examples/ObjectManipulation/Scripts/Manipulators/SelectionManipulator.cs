@@ -30,7 +30,8 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// <summary>
         /// The visualization game object that will become active when the object is selected.
         /// </summary>
-        public GameObject SelectionVisualization;
+        //public GameObject SelectionVisualization;
+        private PlacedObjectManager m_ObjectManager;
 
         private float _scaledElevation;
 
@@ -43,7 +44,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         public void OnElevationChanged(float elevation)
         {
             _scaledElevation = elevation * transform.localScale.y;
-            SelectionVisualization.transform.localPosition = new Vector3(0, -elevation, 0);
+            //SelectionVisualization.transform.localPosition = new Vector3(0, -elevation, 0);
         }
 
         /// <summary>
@@ -56,8 +57,13 @@ namespace GoogleARCore.Examples.ObjectManipulation
         public void OnElevationChangedScaled(float scaledElevation)
         {
             _scaledElevation = scaledElevation;
-            SelectionVisualization.transform.localPosition =
-                new Vector3(0, -scaledElevation / transform.localScale.y, 0);
+            //SelectionVisualization.transform.localPosition =
+                //new Vector3(0, -scaledElevation / transform.localScale.y, 0);
+        }
+
+        private void Awake()
+        {
+            m_ObjectManager = transform.GetChild(0).GetComponent<PlacedObjectManager>();
         }
 
         /// <summary>
@@ -69,7 +75,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
             if (transform.hasChanged)
             {
                 float height = -_scaledElevation / transform.localScale.y;
-                SelectionVisualization.transform.localPosition = new Vector3(0, height, 0);
+                //SelectionVisualization.transform.localPosition = new Vector3(0, height, 0);
             }
         }
 
@@ -120,7 +126,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// </summary>
         protected override void OnSelected()
         {
-            SelectionVisualization.SetActive(true);
+            m_ObjectManager.SetSelectionVisualizer(true);
         }
 
         /// <summary>
@@ -128,7 +134,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// </summary>
         protected override void OnDeselected()
         {
-            SelectionVisualization.SetActive(false);
+            m_ObjectManager.SetSelectionVisualizer(false);
         }
     }
 }

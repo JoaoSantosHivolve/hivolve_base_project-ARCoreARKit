@@ -32,7 +32,7 @@ namespace UnityEngine.XR.ARFoundation.Samples
                     plane.gameObject.GetComponent<LineRenderer>().endColor = color;
 
                     // Set texture
-                    var texture = ArManager.Instance.planeTexture;
+                    var texture = ArManager.Instance.planeTextureARKit;
                     plane.gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
                 }
             }

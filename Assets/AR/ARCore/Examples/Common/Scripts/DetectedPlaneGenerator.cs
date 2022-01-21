@@ -60,12 +60,9 @@ namespace GoogleARCore.Examples.Common
                 // transform is set to the origin with an identity rotation since the mesh for our
                 // prefab is updated in Unity World coordinates.
 
-                // If planes are never to be visible, their color is clear
-                var color = (ArManager.Instance.planesVisibility == PlanesVisibility.AlwaysHide) ? Color.clear : ArManager.Instance.planeColor;
-
                 GameObject planeObject = Instantiate(DetectedPlanePrefab, Vector3.zero, Quaternion.identity, transform);
                 var ojectVisualizer = planeObject.GetComponent<DetectedPlaneVisualizer>();
-                ojectVisualizer.Initialize(_newPlanes[i], color, ArManager.Instance.planeTexture);
+                ojectVisualizer.Initialize(_newPlanes[i], ArManager.Instance.planeColor, ArManager.Instance.planeTextureARCore);
                 _allPlanes.Add(ojectVisualizer);
             }
 

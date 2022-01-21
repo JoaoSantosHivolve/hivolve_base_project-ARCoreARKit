@@ -19,7 +19,7 @@ public class HudManager : MonoBehaviour
     private void Awake()
     {
         m_AnimatorNotSelected = transform.GetChild(0).GetComponent<Animator>();
-        m_AnimatorSelected = transform.GetChild(0).GetComponent<Animator>();
+        m_AnimatorSelected = transform.GetChild(1).GetComponent<Animator>();
     }
 
     private void Update()
