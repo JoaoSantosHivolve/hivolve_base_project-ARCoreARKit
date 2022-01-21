@@ -61,7 +61,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 //new Vector3(0, -scaledElevation / transform.localScale.y, 0);
         }
 
-        private void Awake()
+        private void Start()
         {
             m_ObjectManager = transform.GetChild(0).GetComponent<PlacedObjectManager>();
         }
@@ -126,6 +126,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// </summary>
         protected override void OnSelected()
         {
+            m_ObjectManager.SetObjectAnimation(true);
             m_ObjectManager.SetSelectionVisualizer(true);
         }
 
@@ -134,6 +135,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// </summary>
         protected override void OnDeselected()
         {
+            m_ObjectManager.SetObjectAnimation(false);
             m_ObjectManager.SetSelectionVisualizer(false);
         }
     }

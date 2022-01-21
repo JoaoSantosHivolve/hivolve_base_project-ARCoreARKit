@@ -218,7 +218,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
             if (ArManager.Instance.objectFaceCameraOnPlacement)
             {
                 placedObject.transform.LookAt(Camera.main.transform.position);
-                var lea = transform.localEulerAngles;
+                var lea = placedObject.transform.localEulerAngles;
                 lea.z = 0; lea.x = 0;
                 placedObject.transform.localEulerAngles = lea;
             }

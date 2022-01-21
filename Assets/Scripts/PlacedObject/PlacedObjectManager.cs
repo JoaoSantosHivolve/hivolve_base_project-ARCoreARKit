@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,13 +12,16 @@ public class PlacedObjectManager : MonoBehaviour
     [Range(0.15f, 2f)] public float collisionHeight;
 
     [Header("Components")]
+    [SerializeField] private GameObject m_ObjectHolder;
     [SerializeField] private GameObject m_SelectionCanvas;
     [SerializeField] private GameObject m_ScaleCanvas;
     [SerializeField] private CapsuleCollider m_CapsuleCollider;
 
     private void Awake()
     {
+        m_ObjectHolder = transform.GetChild(0).gameObject;
         m_SelectionCanvas = transform.GetChild(1).gameObject;
+        m_ScaleCanvas = transform.GetChild(2).gameObject;
         m_CapsuleCollider = GetComponent<CapsuleCollider>();
     }
 
@@ -32,6 +36,10 @@ public class PlacedObjectManager : MonoBehaviour
         #endif
     }
 
+    public void SetObjectAnimation(bool selected)
+    {
+        m_ObjectHolder.transform.GetComponent<Animator>().SetBool("Selected", selected);
+    }
     public void SetSelectionVisualizerColor(Color color)
     {
         m_SelectionCanvas.transform.GetChild(0).GetChild(0).GetComponent<Image>().color = color;
@@ -42,7 +50,14 @@ public class PlacedObjectManager : MonoBehaviour
     }
     public void SetSelectionVisualizer(bool selected)
     {
-        m_SelectionCanvas.transform.GetChild(0).GetComponent<Animator>().SetBool("Selected",selected);
+        m_SelectionCanvas.transform.GetComponent<Animator>().SetBool("Selected",selected);
     }
-
+    public void SetScaleVisualizer(bool scaling)
+    {
+        m_ScaleCanvas.transform.GetComponent<Animator>().SetBool("Scaling", scaling);
+    }
+    public void SetScaleVisualizerValue(float value)
+    {
+        m_ScaleCanvas.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = ((int)(value * 100)).ToString() + "%";
+    }
 }

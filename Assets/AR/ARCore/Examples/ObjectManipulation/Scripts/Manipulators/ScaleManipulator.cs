@@ -47,7 +47,19 @@ namespace GoogleARCore.Examples.ObjectManipulation
         private const float _elasticity = 0.15f;
 
         private float _currentScaleRatio;
-        private bool _isScaling;
+
+        private bool m_IsScaling;
+        private bool IsScaling 
+        {
+            get { return m_IsScaling; }
+            set 
+            { 
+                m_IsScaling = value;
+
+                m_ObjectManager.SetScaleVisualizer(value);
+            }
+        }
+        private PlacedObjectManager m_ObjectManager;
 
         private float _scaleDelta
         {
@@ -62,7 +74,6 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return MaxScale - MinScale;
             }
         }
-
         private float _clampedScaleRatio
         {
             get
@@ -70,15 +81,21 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return Mathf.Clamp01(_currentScaleRatio);
             }
         }
-
         private float _currentScale
         {
             get
             {
                 float elasticScaleRatio = _clampedScaleRatio + ElasticDelta();
                 float elasticScale = MinScale + (elasticScaleRatio * _scaleDelta);
+                m_ObjectManager.SetScaleVisualizerValue(elasticScale);
                 return elasticScale;
             }
+        }
+
+
+        private void Start()
+        {
+            m_ObjectManager = transform.GetChild(0).GetComponent<PlacedObjectManager>();
         }
 
         /// <summary>
@@ -116,7 +133,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// <param name="gesture">The gesture that started this transformation.</param>
         protected override void OnStartManipulation(PinchGesture gesture)
         {
-            _isScaling = true;
+            IsScaling = true;
             _currentScaleRatio = (transform.localScale.x - MinScale) / _scaleDelta;
         }
 
@@ -147,7 +164,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// <param name="gesture">The current gesture.</param>
         protected override void OnEndManipulation(PinchGesture gesture)
         {
-            _isScaling = false;
+            IsScaling = false;
         }
 
         private float ElasticDelta()
@@ -172,7 +189,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
         private void LateUpdate()
         {
-            if (!_isScaling)
+            if (!IsScaling)
             {
                 _currentScaleRatio =
                     Mathf.Lerp(_currentScaleRatio, _clampedScaleRatio, Time.deltaTime * 8.0f);
