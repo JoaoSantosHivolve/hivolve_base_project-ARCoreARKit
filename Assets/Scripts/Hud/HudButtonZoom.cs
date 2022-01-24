@@ -9,13 +9,13 @@ public class HudButtonZoom : HudButton
     {
         if (ManipulationSystem.Instance.SelectedObjectManager != null)
         {
-            //Activated = ManipulationSystem.Instance.SelectedObjectManager.GetScaleManipulator().autoRotate;
+            Activated = ManipulationSystem.Instance.SelectedObjectManager.GetScaleManipulator().IsZoomed;
         }
     }
 
     protected override void OnClick()
     {
-        //ManipulationSystem.Instance.SelectedObjectManager.GetScaleManipulator().autoRotate = Activated;
+        ManipulationSystem.Instance.SelectedObjectManager.GetScaleManipulator().IsZoomed = Activated;
     }
 
     private void Start()

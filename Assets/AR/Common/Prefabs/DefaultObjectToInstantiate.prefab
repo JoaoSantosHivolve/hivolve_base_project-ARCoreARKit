@@ -144,6 +144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionWidth: 0.75
   collisionHeight: 0.456
+  m_ObjectHolder: {fileID: 1818520265141772422}
   m_SelectionCanvas: {fileID: 6471080208193315675}
   m_ScaleCanvas: {fileID: 431470388209958050}
   m_CapsuleCollider: {fileID: 1561366061842003124}
@@ -499,8 +500,8 @@ RectTransform:
   m_Father: {fileID: 2406516631246411621}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 1.5}
+  m_AnchorMin: {x: 0, y: 0.75}
+  m_AnchorMax: {x: 1, y: 1.75}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

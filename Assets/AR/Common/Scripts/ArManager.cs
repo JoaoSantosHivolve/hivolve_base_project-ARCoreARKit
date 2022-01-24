@@ -52,12 +52,16 @@ public class ArManager : Singleton<ArManager>
     public Sprite selectionVisualizerSprite;
     public Color selectionVisualizerColor;
     public bool objectFaceCameraOnPlacement;
+    [HideInInspector] public ARRaycastManager arKitRaycaster;
+
+    [Header("----- Manipulation Settings -----")]
     public bool canRotateIfAutoRotateIsEnabled;
     [Range(0.1f, 1f)] public float autoRotationSpeed;
     public bool canScaleIfZoomIsEnabled;
     [Range(2f, 10f)] public float zoomAmount;
+    [Range(0.1f, 1.0f)] public float minScale;
+    [Range(1.0f, 2.0f)] public float maxScale;
     private ObjectPlacer m_ObjectPlacer;
-    [HideInInspector] public ARRaycastManager arKitRaycaster;
 
     [Header("----- Hud Settings -----")]
     public Color hudColor;
@@ -103,7 +107,6 @@ public class ArManager : Singleton<ArManager>
         m_ArCoreSection.SetActive(platform == Platform.Android);
         m_ArKitSection.SetActive(platform == Platform.IOS);
     }
-
 
     public void SetPlanesVisibility(bool visible)
     {

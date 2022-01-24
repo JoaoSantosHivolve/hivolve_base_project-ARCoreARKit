@@ -176,7 +176,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
             {
                 GameObject oldAnchor = transform.parent.gameObject;
 
-                Pose desiredPose = new Pose(_desiredAnchorPosition, ArManager.Instance.platform == Platform.Android ? _lastHit.Pose.rotation : Quaternion.identity);
+                Pose desiredPose = new Pose(_desiredAnchorPosition, _lastHit.Pose.rotation);
 
                 Vector3 desiredLocalPosition =
                     transform.parent.InverseTransformPoint(desiredPose.position);
@@ -188,18 +188,8 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
                 desiredPose.position = transform.parent.TransformPoint(desiredLocalPosition);
 
-                if (ArManager.Instance.platform == Platform.Android)
-                {
-                    Anchor newAnchor = _lastHit.Trackable.CreateAnchor(desiredPose);
-                    transform.parent = newAnchor.transform;
-                }
-                else if (ArManager.Instance.platform == Platform.Android)
-                {
-                    var anchor = Instantiate(new GameObject(), _desiredAnchorPosition, oldAnchor.transform.rotation);
-                    var newAnchor = _lastHit.Trackable.CreateAnchor(desiredPose);
-                    transform.parent = newAnchor.transform;
-                }
-
+                Anchor newAnchor = _lastHit.Trackable.CreateAnchor(desiredPose);
+                transform.parent = newAnchor.transform;
 
                 Destroy(oldAnchor);
 
