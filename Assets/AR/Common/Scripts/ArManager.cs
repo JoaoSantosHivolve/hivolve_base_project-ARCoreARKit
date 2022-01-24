@@ -17,6 +17,17 @@ public enum PlanesVisibility
     HideOnObjectPlacement,
     AlwaysHide
 }
+public enum IconPack
+{
+    Default
+}
+public enum HudButtonType
+{
+    Delete,
+    AutoRotate,
+    Zoom,
+    Confirm
+}
 
 public class ArManager : Singleton<ArManager>
 {
@@ -43,6 +54,16 @@ public class ArManager : Singleton<ArManager>
     public bool objectFaceCameraOnPlacement;
     private ObjectPlacer m_ObjectPlacer;
     [HideInInspector] public ARRaycastManager arKitRaycaster;
+
+    [Header("----- Hud Settings -----")]
+    public Color hudColor;
+    public IconPack iconPack;
+    [Range(0.2f, 0.3f)] public float buttonsSize;
+    [Range(0.1f, 0.4f)] public float leftSideAnchor;
+    [Range(0.6f, 0.9f)] public float rightSideAnchor;
+    public List<HudButtonType> selectedPanelLeftButtons;
+    public List<HudButtonType> selectedPanelMiddleButtons;
+    public List<HudButtonType> selectedPanelRightButtons;
 
     protected override void Awake()
     {
@@ -96,4 +117,9 @@ public class ArManager : Singleton<ArManager>
     public void DeleteAllObjects() => m_ObjectPlacer.DeleteAllObjects();
     public void DeleteSelectedObject() => m_ObjectPlacer.DeleteSelectedObject();
 
+    [ContextMenu("UPDATE HUD")]
+    void SetupHudViaInspector()
+    {
+        GameObject.FindObjectOfType<HudManager>().SetupHudViaInspector();
+    }
 }
