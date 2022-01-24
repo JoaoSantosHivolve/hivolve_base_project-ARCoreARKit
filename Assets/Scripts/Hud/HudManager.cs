@@ -38,6 +38,11 @@ public class HudManager : MonoBehaviour
         m_SelectedPanelParent = m_AnimatorSelected.transform.GetChild(0).GetChild(1);
     }
 
+    private void Start()
+    {
+        SetupHud();
+    }
+
     private void Update()
     {
         m_AnimatorNotSelected.SetBool("Visible", !ObjectIsSelected);
@@ -173,8 +178,12 @@ public class HudManager : MonoBehaviour
                 button.DefaultSprite = Resources.Load<Sprite>(path + "Delete");
                 break;
             case HudButtonType.AutoRotate:
+                button.DefaultSprite = Resources.Load<Sprite>(path + "RotateDefault");
+                button.ActivatedSprite = Resources.Load<Sprite>(path + "RotateActivated");
                 break;
             case HudButtonType.Zoom:
+                button.DefaultSprite = Resources.Load<Sprite>(path + "ZoomDefault");
+                button.ActivatedSprite = Resources.Load<Sprite>(path + "ZoomActivated");
                 break;
             case HudButtonType.Confirm:
                 button.DefaultSprite = Resources.Load<Sprite>(path + "Confirm");
@@ -199,7 +208,7 @@ public class HudManager : MonoBehaviour
     }
 
     [ContextMenu("UPDATE HUD")]
-    public void SetupHudViaInspector()
+    public void SetupHud()
     {
         SetupSelectedObjectHud(HudSide.Left, ref leftSideButtons, manager.selectedPanelLeftButtons);
         SetupSelectedObjectHud(HudSide.Middle, ref middleSideButtons, manager.selectedPanelMiddleButtons);

@@ -30,7 +30,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
     public class ObjectPlacer : Manipulator
     {
         private Camera m_FirstPersonCamera;
-        public GameObject objectToInstantiate;
+        public PlacedObjectManager objectToInstantiate;
         public GameObject ManipulatorPrefab;
 
         static List<ARRaycastHit> s_Hits = new List<ARRaycastHit>();
@@ -211,8 +211,8 @@ namespace GoogleARCore.Examples.ObjectManipulation
             m_PlacedObjects.Add(manipulator.transform.parent.gameObject);
 
             // Set selection visualizer sprite and color
-            placedObject.GetComponent<PlacedObjectManager>().SetSelectionVisualizerColor(ArManager.Instance.selectionVisualizerColor);
-            placedObject.GetComponent<PlacedObjectManager>().SetSelectionVisualizerSprite(ArManager.Instance.selectioVisualizerSprite);
+            placedObject.SetSelectionVisualizerColor(ArManager.Instance.selectionVisualizerColor);
+            placedObject.SetSelectionVisualizerSprite(ArManager.Instance.selectionVisualizerSprite);
 
             // Object face camera
             if (ArManager.Instance.objectFaceCameraOnPlacement)

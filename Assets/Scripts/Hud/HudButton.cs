@@ -32,20 +32,42 @@ public abstract class HudButton : MonoBehaviour
         }
     }
 
-    private Image m_Image;
+    private bool m_Activated;
+    protected bool Activated
+    {
+        get { return m_Activated; }
+        set
+        {
+            m_Activated = value;
+
+            GetComponent<Image>().sprite = value ? m_ActivatedSprite : DefaultSprite;
+        }
+    }
     protected HudButtonOnClickType m_OnClickType;
 
     private void Awake()
     {
-        m_Image = GetComponent<Image>();
         GetComponent<Button>().onClick.AddListener(BaseOnClick);
     }
+    private void Update()
+    {
+        if(m_OnClickType == HudButtonOnClickType.Toggle)
+        {
+            CheckIfActivated();
+        }
+    }
+
     private void BaseOnClick()
     {
+        if (m_OnClickType == HudButtonOnClickType.Toggle)
+        {
+            Activated = !Activated;
+        }
 
         OnClick();
     }
     protected abstract void OnClick();
+    protected abstract void CheckIfActivated();
 
     public void SetColor(Color color)
     {

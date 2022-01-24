@@ -1,3 +1,4 @@
+using GoogleARCore.Examples.ObjectManipulation;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -60,4 +61,7 @@ public class PlacedObjectManager : MonoBehaviour
     {
         m_ScaleCanvas.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = ((int)(value * 100)).ToString() + "%";
     }
+
+    public ScaleManipulator GetScaleManipulator() => transform.parent.GetComponent<ScaleManipulator>();
+    public RotationManipulator GetRotationManipulator() => transform.parent.GetComponent<RotationManipulator>();
 }

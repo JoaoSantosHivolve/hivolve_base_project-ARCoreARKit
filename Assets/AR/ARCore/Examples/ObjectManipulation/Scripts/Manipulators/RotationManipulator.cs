@@ -32,6 +32,17 @@ namespace GoogleARCore.Examples.ObjectManipulation
         private const float _rotationRateDegreesDrag = 100.0f;
         private const float _rotationRateDegreesTwist = 2.5f;
 
+        public bool autoRotate;
+
+        private void FixedUpdate()
+        {
+            if (autoRotate && !_isManipulating)
+            {
+                //Rotate
+                transform.Rotate(0.0f, ArManager.Instance.autoRotationSpeed, 0.0f);
+            }
+        }
+
         /// <summary>
         /// Returns true if the manipulation can be started for the given Drag gesture.
         /// </summary>
@@ -48,6 +59,9 @@ namespace GoogleARCore.Examples.ObjectManipulation
             {
                 return false;
             }
+
+            if (autoRotate && !ArManager.Instance.canRotateIfAutoRotateIsEnabled)
+                return false;
 
             return true;
         }
@@ -68,6 +82,9 @@ namespace GoogleARCore.Examples.ObjectManipulation
             {
                 return false;
             }
+
+            if (autoRotate && !ArManager.Instance.canRotateIfAutoRotateIsEnabled)
+                return false;
 
             return true;
         }

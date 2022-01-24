@@ -32,6 +32,8 @@ namespace Common
                     t.sizeDelta = new Vector2(0, newLength);
                     break;
             }
+
+            Canvas.ForceUpdateCanvases();
         }
 
         #if UNITY_EDITOR
@@ -52,6 +54,8 @@ namespace Common
                     t.sizeDelta = new Vector2(0, newLength);
                     break;
             }
+
+            Canvas.ForceUpdateCanvases();
         }
         #endif
     }

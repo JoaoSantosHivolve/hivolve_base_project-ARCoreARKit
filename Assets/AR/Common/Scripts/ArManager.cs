@@ -49,9 +49,13 @@ public class ArManager : Singleton<ArManager>
     private ARPointCloudManager m_ARKitPointCloudVisualizer;
 
     [Header("----- Object Placer Settings -----")]
-    public Sprite selectioVisualizerSprite;
+    public Sprite selectionVisualizerSprite;
     public Color selectionVisualizerColor;
     public bool objectFaceCameraOnPlacement;
+    public bool canRotateIfAutoRotateIsEnabled;
+    [Range(0.1f, 1f)] public float autoRotationSpeed;
+    public bool canScaleIfZoomIsEnabled;
+    [Range(2f, 10f)] public float zoomAmount;
     private ObjectPlacer m_ObjectPlacer;
     [HideInInspector] public ARRaycastManager arKitRaycaster;
 
@@ -112,7 +116,7 @@ public class ArManager : Singleton<ArManager>
             m_ARKitPlaneGenerator.SetVisibility(visible);
         }
     }
-    public void SetObjectToInstantiate(GameObject objectToInstantiate) => m_ObjectPlacer.objectToInstantiate = objectToInstantiate;
+    public void SetObjectToInstantiate(PlacedObjectManager objectToInstantiate) => m_ObjectPlacer.objectToInstantiate = objectToInstantiate;
     public void DeselectObject() => ManipulationSystem.Instance.Deselect();
     public void DeleteAllObjects() => m_ObjectPlacer.DeleteAllObjects();
     public void DeleteSelectedObject() => m_ObjectPlacer.DeleteSelectedObject();
@@ -120,6 +124,6 @@ public class ArManager : Singleton<ArManager>
     [ContextMenu("UPDATE HUD")]
     void SetupHudViaInspector()
     {
-        GameObject.FindObjectOfType<HudManager>().SetupHudViaInspector();
+        GameObject.FindObjectOfType<HudManager>().SetupHud();
     }
 }
