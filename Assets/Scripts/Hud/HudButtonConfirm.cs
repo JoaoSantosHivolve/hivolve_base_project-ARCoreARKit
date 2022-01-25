@@ -13,9 +13,4 @@ public class HudButtonConfirm : HudButton
     {
         ArManager.Instance.DeselectObject();
     }
-
-    private void Start()
-    {
-        m_OnClickType = HudButtonOnClickType.OneClick;
-    }
 }

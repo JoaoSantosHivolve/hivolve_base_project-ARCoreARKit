@@ -24,19 +24,27 @@ public class HudManager : MonoBehaviour
     private Animator m_AnimatorNotSelected;
     private Animator m_AnimatorSelected;
     private GameObject m_HudButtonPrefab;
-    private Transform m_SelectedPanelParent;
     public ArManager manager;
-    public List<GameObject> leftSideButtons;
-    public List<GameObject> middleSideButtons;
-    public List<GameObject> rightSideButtons;
+    [Header("Selected Panel Top")]
+    private Transform m_SelectedTopParent;
+    public List<GameObject> selectedTopLeftButtons;
+    public List<GameObject> selectedTopMiddleButtons;
+    public List<GameObject> selectedTopRightButtons;
+    [Header("Selected Panel Bottom")]
+    private Transform m_SelectedBottomParent;
+    public List<GameObject> selectedBottomLeftButtons;
+    public List<GameObject> selectedBottomMiddleButtons;
+    public List<GameObject> selectedBottomRightButtons;
+
 
     private void Awake()
     {
         m_AnimatorNotSelected = transform.GetChild(0).GetComponent<Animator>();
         m_AnimatorSelected = transform.GetChild(1).GetComponent<Animator>();
         m_HudButtonPrefab = Resources.Load<GameObject>("Prefabs/Hud/HudButton");
-        m_SelectedPanelParent = m_AnimatorSelected.transform.GetChild(0).GetChild(1);
-    }
+        m_SelectedTopParent = m_AnimatorSelected.transform.GetChild(0).GetChild(1);
+        m_SelectedBottomParent = m_AnimatorSelected.transform.GetChild(1).GetChild(1);
+}
 
     private void Start()
     {
@@ -49,64 +57,22 @@ public class HudManager : MonoBehaviour
         m_AnimatorSelected.SetBool("Visible", ObjectIsSelected);
     }
 
-    //private void SetupHud()
-    //{
-    //    // ----- Set "object selected" panel buttons
-    //    // --- Left side
-    //    // Start with a clean state
-    //    DeleteButtonsOnList(ref leftSideButtons);
-    //    // Cant add more than 3 buttons
-    //    if (manager.leftSideButtons.Count > 3)
-    //    {
-    //        Debug.Log("Left side buttons count > 3");
-    //        return;
-    //    }
-    //    // Instantiate buttons
-    //    foreach (var item in manager.leftSideButtons)
-    //    {
-    //        // Instantiate button
-    //        var newButton = Instantiate(m_HudButtonPrefab, m_SelectedPanelParent);
-    //        // Set name according to type of button
-    //        newButton.name = "HudButton - " + item.ToString();
-    //        // Add type of button script
-    //        AddButtonScript(newButton, item);
-    //        // Set correct color
-    //        newButton.GetComponent<HudButton>().SetColor(manager.hudColor);
-    //        // Set button sprites
-    //        AddButtonSprites(newButton.GetComponent<HudButton>(), item);
-    //        // Add button to list
-    //        leftSideButtons.Add(newButton);
-    //    }
-    //    // Position buttons
-    //    var count = leftSideButtons.Count;
-    //    var size = manager.buttonsSize;
-    //    var remainingSpace = 1f - (size * count);
-    //    var increment = remainingSpace / (2 + (count - 1));
-    //    for (int i = 0; i < count; i++)
-    //    {
-    //        var maxY = 1f - ((increment + (increment * i)) + (i * size));
-    //        var minY = maxY - size;
-    //        leftSideButtons[i].GetComponent<RectTransform>().anchorMin = new Vector2(leftSideAnchorPos, minY);
-    //        leftSideButtons[i].GetComponent<RectTransform>().anchorMax = new Vector2(leftSideAnchorPos, maxY);
-    //    }
-    //}
-    public void SetupSelectedObjectHud(HudSide side, ref List<GameObject> panelButtons, List<HudButtonType> buttonsToAdd)
+    public void SetupButtonsOnHud(HudSide side, ref List<GameObject> panelButtons, List<HudButtonType> buttonsToAdd, Transform parent)
     {
         // ----- Set "object selected" panel buttons
         // --- Left side
         // Start with a clean state
         DeleteButtonsOnList(ref panelButtons);
         // Cant add more than 3 buttons
-        if (buttonsToAdd.Count > 3)
+        if (buttonsToAdd.Count > 3 || buttonsToAdd.Count == 0)
         {
-            Debug.Log("Buttons count > 3");
             return;
         }
         // Instantiate buttons
         foreach (var item in buttonsToAdd)
         {
             // Instantiate button
-            var newButton = Instantiate(m_HudButtonPrefab, m_SelectedPanelParent);
+            var newButton = Instantiate(m_HudButtonPrefab, parent);
             // Set name according to type of button
             newButton.name = "HudButton - " + item.ToString();
             // Add type of button script
@@ -153,15 +119,23 @@ public class HudManager : MonoBehaviour
         {
             case HudButtonType.Delete:
                 button.AddComponent<HudButtonDelete>();
+                button.GetComponent<HudButtonDelete>().type = HudButtonOnClickType.OneClick;
                 break;
             case HudButtonType.AutoRotate:
                 button.AddComponent<HudButtonAutoRotate>();
+                button.GetComponent<HudButtonAutoRotate>().type = HudButtonOnClickType.Toggle;
                 break;
             case HudButtonType.Zoom:
                 button.AddComponent<HudButtonZoom>();
+                button.GetComponent<HudButtonZoom>().type = HudButtonOnClickType.Toggle;
                 break;
             case HudButtonType.Confirm:
                 button.AddComponent<HudButtonConfirm>();
+                button.GetComponent<HudButtonConfirm>().type = HudButtonOnClickType.OneClick;
+                break;
+            case HudButtonType.Light:
+                button.AddComponent<HudButtonLight>();
+                button.GetComponent<HudButtonLight>().type = HudButtonOnClickType.Toggle;
                 break;
             default:
                 break;
@@ -188,6 +162,10 @@ public class HudManager : MonoBehaviour
             case HudButtonType.Confirm:
                 button.DefaultSprite = Resources.Load<Sprite>(path + "Confirm");
                 break;
+            case HudButtonType.Light:
+                button.DefaultSprite = Resources.Load<Sprite>(path + "LightDefault");
+                button.ActivatedSprite = Resources.Load<Sprite>(path + "LightActivated");
+                break;
             default:
                 break;
         }
@@ -207,11 +185,16 @@ public class HudManager : MonoBehaviour
         list = new List<GameObject>();
     }
 
-    [ContextMenu("UPDATE HUD")]
     public void SetupHud()
     {
-        SetupSelectedObjectHud(HudSide.Left, ref leftSideButtons, manager.selectedPanelLeftButtons);
-        SetupSelectedObjectHud(HudSide.Middle, ref middleSideButtons, manager.selectedPanelMiddleButtons);
-        SetupSelectedObjectHud(HudSide.Right, ref rightSideButtons, manager.selectedPanelRightButtons);
+        // Top Selected Panel
+        SetupButtonsOnHud(HudSide.Left, ref selectedTopLeftButtons, manager.selectedPanelTopLeftButtons, m_SelectedTopParent);
+        SetupButtonsOnHud(HudSide.Middle, ref selectedTopMiddleButtons, manager.selectedPanelTopMiddleButtons, m_SelectedTopParent);
+        SetupButtonsOnHud(HudSide.Right, ref selectedTopRightButtons, manager.selectedPanelTopRightButtons, m_SelectedTopParent);
+
+        // Bottom Selected Panel
+        SetupButtonsOnHud(HudSide.Left, ref selectedBottomLeftButtons, manager.selectedPanelBotLeftButtons, m_SelectedBottomParent);
+        SetupButtonsOnHud(HudSide.Middle, ref selectedBottomMiddleButtons, manager.selectedPanelBotMiddleButtons, m_SelectedBottomParent);
+        SetupButtonsOnHud(HudSide.Right, ref selectedBottomRightButtons, manager.selectedPanelBotRightButtons, m_SelectedBottomParent);
     }
 }

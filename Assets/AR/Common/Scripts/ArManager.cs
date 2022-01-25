@@ -17,6 +17,12 @@ public enum PlanesVisibility
     HideOnObjectPlacement,
     AlwaysHide
 }
+public enum PointCloudVisibility
+{
+    AlwaysVisible,
+    HideOnObjectPlacement,
+    AlwaysHide
+}
 public enum IconPack
 {
     Default
@@ -26,7 +32,8 @@ public enum HudButtonType
     Delete,
     AutoRotate,
     Zoom,
-    Confirm
+    Confirm,
+    Light
 }
 
 public class ArManager : Singleton<ArManager>
@@ -45,6 +52,7 @@ public class ArManager : Singleton<ArManager>
 
     [Header("----- Point Cloud Settings -----")]
     public Color pointCloudColor;
+    public PointCloudVisibility pointCloudVisibility;
     private PointcloudVisualizer m_ARCorePointCloudVisualizer;
     private ARPointCloudManager m_ARKitPointCloudVisualizer;
 
@@ -69,9 +77,12 @@ public class ArManager : Singleton<ArManager>
     [Range(0.2f, 0.3f)] public float buttonsSize;
     [Range(0.1f, 0.4f)] public float leftSideAnchor;
     [Range(0.6f, 0.9f)] public float rightSideAnchor;
-    public List<HudButtonType> selectedPanelLeftButtons;
-    public List<HudButtonType> selectedPanelMiddleButtons;
-    public List<HudButtonType> selectedPanelRightButtons;
+    public List<HudButtonType> selectedPanelTopLeftButtons;
+    public List<HudButtonType> selectedPanelTopMiddleButtons;
+    public List<HudButtonType> selectedPanelTopRightButtons;
+    public List<HudButtonType> selectedPanelBotLeftButtons;
+    public List<HudButtonType> selectedPanelBotMiddleButtons;
+    public List<HudButtonType> selectedPanelBotRightButtons;
 
     protected override void Awake()
     {

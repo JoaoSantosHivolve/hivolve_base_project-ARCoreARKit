@@ -17,9 +17,4 @@ public class HudButtonAutoRotate : HudButton
     {
         ManipulationSystem.Instance.SelectedObjectManager.GetRotationManipulator().autoRotate = Activated;
     }
-
-    private void Start()
-    {
-        m_OnClickType = HudButtonOnClickType.Toggle;
-    }
 }

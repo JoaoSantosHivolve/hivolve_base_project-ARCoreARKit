@@ -13,9 +13,4 @@ public class HudButtonDelete : HudButton
     {
         ArManager.Instance.DeleteSelectedObject();
     }
-
-    private void Start()
-    {
-        m_OnClickType = HudButtonOnClickType.OneClick;
-    }
 }

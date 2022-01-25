@@ -17,9 +17,4 @@ public class HudButtonZoom : HudButton
     {
         ManipulationSystem.Instance.SelectedObjectManager.GetScaleManipulator().IsZoomed = Activated;
     }
-
-    private void Start()
-    {
-        m_OnClickType = HudButtonOnClickType.Toggle;
-    }
 }

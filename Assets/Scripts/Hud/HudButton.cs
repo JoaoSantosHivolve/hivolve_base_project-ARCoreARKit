@@ -43,15 +43,17 @@ public abstract class HudButton : MonoBehaviour
             GetComponent<Image>().sprite = value ? m_ActivatedSprite : DefaultSprite;
         }
     }
-    protected HudButtonOnClickType m_OnClickType;
+    public HudButtonOnClickType type;
 
     private void Awake()
     {
         GetComponent<Button>().onClick.AddListener(BaseOnClick);
+
+        Activated = false;
     }
     private void Update()
     {
-        if(m_OnClickType == HudButtonOnClickType.Toggle)
+        if(type == HudButtonOnClickType.Toggle)
         {
             CheckIfActivated();
         }
@@ -59,7 +61,7 @@ public abstract class HudButton : MonoBehaviour
 
     private void BaseOnClick()
     {
-        if (m_OnClickType == HudButtonOnClickType.Toggle)
+        if (type == HudButtonOnClickType.Toggle)
         {
             Activated = !Activated;
         }
