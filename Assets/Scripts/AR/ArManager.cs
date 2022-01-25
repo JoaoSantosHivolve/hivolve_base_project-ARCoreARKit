@@ -70,6 +70,7 @@ public class ArManager : Singleton<ArManager>
     [Range(0.1f, 1.0f)] public float minScale;
     [Range(1.0f, 2.0f)] public float maxScale;
     private ObjectPlacer m_ObjectPlacer;
+    private GameObject m_ExtraLights;
 
     [Header("----- Hud Settings -----")]
     public Color hudColor;
@@ -110,6 +111,10 @@ public class ArManager : Singleton<ArManager>
         m_ARCorePointCloudVisualizer.PointColor = pointCloudColor;
         //TODO: ARKit
 
+        // ----- MANIPULATION INITIALIZATION -----
+        m_ExtraLights = GameObject.Find("Lights");
+        m_ExtraLights.SetActive(false);
+
         // ----- OBJECT PLACEMENT INITIALIZATION -----
         m_ObjectPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
         arKitRaycaster = GameObject.FindObjectOfType<ARRaycastManager>();
@@ -134,6 +139,7 @@ public class ArManager : Singleton<ArManager>
     public void DeselectObject() => ManipulationSystem.Instance.Deselect();
     public void DeleteAllObjects() => m_ObjectPlacer.DeleteAllObjects();
     public void DeleteSelectedObject() => m_ObjectPlacer.DeleteSelectedObject();
+    public void SetExtraLights(bool value) => m_ExtraLights.SetActive(value);
 
     [ContextMenu("UPDATE HUD")]
     void SetupHudViaInspector()

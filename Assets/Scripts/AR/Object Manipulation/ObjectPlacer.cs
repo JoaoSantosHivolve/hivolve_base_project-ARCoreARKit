@@ -86,10 +86,6 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return;
             }
 
-            // ----- UI Detection -----
-            if (IsPointerOverUIObject())
-                return;
-
             // ----- Object Detection -----
             // If gesture is targeting an existing object we are done.
             if (gesture.TargetObject != null)
@@ -99,6 +95,12 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return;
             // Check if is inside Object
             if (IsPointerInsideObject(gesture.StartPosition))
+                return;
+
+            // ----- UI Detection -----
+            if (IsPointerOverUIObject())
+                return;
+            if (IsPointerOverUiObject(gesture))
                 return;
 
             // ----- Raycast Android -----

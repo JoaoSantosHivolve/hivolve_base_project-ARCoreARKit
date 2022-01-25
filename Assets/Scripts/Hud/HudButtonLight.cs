@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class HudButtonLight : HudButton
 {
-    private GameObject m_ExtraLightsHolder;
-
     protected override void CheckIfActivated()
     {
         
@@ -13,11 +11,6 @@ public class HudButtonLight : HudButton
 
     protected override void OnClick()
     {
-        m_ExtraLightsHolder.SetActive(Activated);
-    }
-
-    private void Start()
-    {
-        m_ExtraLightsHolder = GameObject.Find("Lights");
+        ArManager.Instance.SetExtraLights(Activated);
     }
 }
