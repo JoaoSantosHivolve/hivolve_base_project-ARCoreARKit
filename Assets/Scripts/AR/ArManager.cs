@@ -15,6 +15,7 @@ public enum PlanesVisibility
 {
     AlwaysVisible,
     HideOnObjectPlacement,
+    ShowWhenInteracting,
     AlwaysHide
 }
 public enum PointCloudVisibility
@@ -49,18 +50,11 @@ public class ArManager : Singleton<ArManager>
     public PlanesVisibility planesVisibility;
     private DetectedPlaneGenerator m_ARCorePlaneGenerator;
     private PlaneDetectionController m_ARKitPlaneGenerator;
-
-    [Header("----- Point Cloud Settings -----")]
-    public Color pointCloudColor;
-    public PointCloudVisibility pointCloudVisibility;
-    private PointcloudVisualizer m_ARCorePointCloudVisualizer;
-    private ARPointCloudManager m_ARKitPointCloudVisualizer;
-
+   
     [Header("----- Object Placer Settings -----")]
     public Sprite selectionVisualizerSprite;
     public Color selectionVisualizerColor;
     public bool objectFaceCameraOnPlacement;
-    [HideInInspector] public ARRaycastManager arKitRaycaster;
 
     [Header("----- Manipulation Settings -----")]
     public bool canRotateIfAutoRotateIsEnabled;
@@ -105,19 +99,12 @@ public class ArManager : Singleton<ArManager>
         m_ARCorePlaneGenerator.planesAreVisible = planesVisibility != PlanesVisibility.AlwaysHide;
         m_ARKitPlaneGenerator.planesAreVisible = planesVisibility != PlanesVisibility.AlwaysHide;
 
-        // ----- POINT CLOUD INITIALIZATION -----
-        m_ARCorePointCloudVisualizer = GameObject.FindObjectOfType<PointcloudVisualizer>();
-        m_ARKitPointCloudVisualizer = GameObject.FindObjectOfType<ARPointCloudManager>();
-        m_ARCorePointCloudVisualizer.PointColor = pointCloudColor;
-        //TODO: ARKit
-
         // ----- MANIPULATION INITIALIZATION -----
         m_ExtraLights = GameObject.Find("Lights");
         m_ExtraLights.SetActive(false);
 
         // ----- OBJECT PLACEMENT INITIALIZATION -----
         m_ObjectPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
-        arKitRaycaster = GameObject.FindObjectOfType<ARRaycastManager>();
 
         // ----- ENABLE CORRECT SECTION -----
         m_ArCoreSection.SetActive(platform == Platform.Android);

@@ -76,9 +76,6 @@ namespace GoogleARCore.Examples.ObjectManipulation
             RaycastHit hit;
             if (GestureTouchesUtility.RaycastFromCamera(StartPosition, out hit))
             {
-                if (IsPointerOverUiObject(StartPosition))
-                    return;
-
                 var gameObject = hit.transform.gameObject;
                 if (gameObject != null)
                 {
@@ -91,20 +88,6 @@ namespace GoogleARCore.Examples.ObjectManipulation
                     }
                 }
             }
-        }
-
-        private static bool IsPointerOverUiObject(Vector2 pos)
-        {
-            // Referencing this code for GraphicRaycaster https://gist.github.com/stramit/ead7ca1f432f3c0f181f
-            // the ray cast appears to require only eventData.position.
-            var eventDataCurrentPosition = new PointerEventData(EventSystem.current)
-            {
-                position = new Vector2(pos.x, pos.y)
-            };
-
-            var results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-            return results.Count > 0;
         }
 
         /// <summary>

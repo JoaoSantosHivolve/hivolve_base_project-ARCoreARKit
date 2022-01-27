@@ -34,7 +34,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         public GameObject ManipulatorPrefab;
 
         static List<ARRaycastHit> s_Hits = new List<ARRaycastHit>();
-        ARRaycastManager m_RaycastManager;
+        private ARRaycastManager m_RaycastManager;
 
         [SerializeField] private List<GameObject> m_PlacedObjects = new List<GameObject>();
 
@@ -42,30 +42,38 @@ namespace GoogleARCore.Examples.ObjectManipulation
         {
             // Get main camera
             m_FirstPersonCamera = Camera.main;
+            m_RaycastManager = GameObject.FindObjectOfType<ARRaycastManager>();
         }
 
         protected override void Update()
         {
             base.Update();
 
-            // ----- CONTROL PLANE VISIBILITY -----
-            // Hide planes if the setting is enabled -- On Update for bug prevention - Not Optimized
-            if(m_PlacedObjects.Count > 0)
+            // Control planes Visibility
+            switch (ArManager.Instance.planesVisibility)
             {
-                if (ArManager.Instance.planesVisibility == PlanesVisibility.HideOnObjectPlacement)
-                {
-                    ArManager.Instance.SetPlanesVisibility(false);
-                }
-            }
-            // Show planes again if they are meant to
-            else 
-            {
-                if (ArManager.Instance.planesVisibility != PlanesVisibility.AlwaysHide)
-                {
+                case PlanesVisibility.AlwaysVisible:
                     ArManager.Instance.SetPlanesVisibility(true);
-                }
+                    break;
+                case PlanesVisibility.HideOnObjectPlacement:
+                    ArManager.Instance.SetPlanesVisibility(m_PlacedObjects.Count == 0);
+                    break;
+                case PlanesVisibility.ShowWhenInteracting:
+                    if(m_PlacedObjects.Count == 0)
+                    {
+                        ArManager.Instance.SetPlanesVisibility(true);
+                    }
+                    else
+                    {
+                        ArManager.Instance.SetPlanesVisibility(ManipulationSystem.Instance.SelectedObject != null);
+                    }
+                    break;
+                case PlanesVisibility.AlwaysHide:
+                    ArManager.Instance.SetPlanesVisibility(false);
+                    break;
+                default:
+                    break;
             }
-            // ----- -----
         }
 
         protected override bool CanStartManipulationForGesture(TapGesture gesture)
@@ -125,16 +133,25 @@ namespace GoogleARCore.Examples.ObjectManipulation
             // ----- Raycast iOS -----
             else if (ArManager.Instance.platform == Platform.IOS)
             {
-                if(Physics.Raycast(Camera.main.ScreenToWorldPoint(gesture.StartPosition), Camera.main.transform.forward, out var hit))
+                if (m_RaycastManager.Raycast(gesture.StartPosition, s_Hits, TrackableType.PlaneWithinPolygon))
                 {
-                    if (hit.collider.gameObject != null)
-                    {
-                        if (hit.collider.gameObject.GetComponent<ARPlane>() != null)
-                        {
-                            PlaceObject(hit.point, Quaternion.identity, new TrackableHit());
-                        }
-                    }
+                    // Raycast hits are sorted by distance, so the first one
+                    // will be the closest hit.
+                    var hitPose = s_Hits[0].pose;
+
+                    PlaceObject(hitPose.position, hitPose.rotation, new TrackableHit());
                 }
+
+                //if (Physics.Raycast(Camera.main.ScreenToWorldPoint(gesture.StartPosition), Camera.main.transform.forward, out var hit))
+                //{
+                //    if (hit.collider.gameObject != null)
+                //    {
+                //        if (hit.collider.gameObject.GetComponent<ARPlane>() != null)
+                //        {
+                //            PlaceObject(hit.point, Quaternion.identity, new TrackableHit());
+                //        }
+                //    }
+                //}
             }
         }
 
@@ -185,6 +202,9 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
         private void PlaceObject(Vector3 position, Quaternion rotation, TrackableHit hit)
         {
+            // Delete old objects
+            DeleteAllObjects();
+
             // Instantiate game object at the hit pose.
             var placedObject = Instantiate(objectToInstantiate, position, rotation);
 

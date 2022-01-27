@@ -54,10 +54,12 @@ namespace GoogleARCore.Examples.ObjectManipulation
         private TrackableHit _lastHit;
 
         private static List<ARRaycastHit> s_Hits = new List<ARRaycastHit>();
+        private ARRaycastManager m_RaycastManager;
 
-        /// <summary>
-        /// The Unity's Start method.
-        /// </summary>
+        protected void Awake()
+        {
+            m_RaycastManager = GameObject.FindObjectOfType<ARRaycastManager>();
+        }
         protected void Start()
         {
             _desiredLocalPosition = new Vector3(0, 0, 0);
@@ -157,7 +159,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
             }
             else if (ArManager.Instance.platform == Platform.IOS)
             {
-                if (ArManager.Instance.arKitRaycaster.Raycast(gesture.Position, s_Hits, TrackableType.PlaneWithinPolygon))
+                if (m_RaycastManager.Raycast(gesture.Position, s_Hits, TrackableType.PlaneWithinPolygon))
                 {
                     var hitPose = s_Hits[0].pose;
 
