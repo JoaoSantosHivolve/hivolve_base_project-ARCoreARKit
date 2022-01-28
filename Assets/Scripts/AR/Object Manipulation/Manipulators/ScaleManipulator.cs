@@ -210,6 +210,8 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 float currentScale = _currentScale;
 
                 transform.localScale = new Vector3(currentScale, currentScale, currentScale);
+
+                m_ObjectManager.SetScaleVisualizer(false);
             }
             else
             {

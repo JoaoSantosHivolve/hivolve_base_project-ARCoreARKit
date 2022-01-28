@@ -28,6 +28,12 @@ public enum IconPack
 {
     Default
 }
+public enum LoadingUI
+{
+    Dots,
+    Line,
+    Wheel
+}
 public enum HudButtonType
 {
     Delete,
@@ -42,7 +48,7 @@ public class ArManager : Singleton<ArManager>
     public Platform platform { get; private set; }
     private GameObject m_ArCoreSection;
     private GameObject m_ArKitSection;
-    
+
     [Header("----- Plane Generation Settings -----")]
     public Color planeColor;
     public Texture planeTextureARCore;
@@ -64,9 +70,13 @@ public class ArManager : Singleton<ArManager>
     [Range(0.1f, 1.0f)] public float minScale;
     [Range(1.0f, 2.0f)] public float maxScale;
     private ObjectPlacer m_ObjectPlacer;
-    private GameObject m_ExtraLights;
+    [HideInInspector] public GameObject m_ExtraLights; // Public so it can be used on lightButton
 
-    [Header("----- Hud Settings -----")]
+    [Header("----- UI - Intro Settings -----")]
+    public LoadingUI loadingType;
+    [Range(1.00f, 5.00f)] public float loadingTime;
+
+    [Header("----- UI - Hud Settings -----")]
     public Color hudColor;
     public IconPack iconPack;
     [Range(0.2f, 0.3f)] public float buttonsSize;
@@ -90,14 +100,12 @@ public class ArManager : Singleton<ArManager>
         platform = Platform.IOS;
 #endif
         // ----- SECTION'S INITIALIZATION -----
-        m_ArCoreSection = transform.GetChild(0).gameObject;
-        m_ArKitSection = transform.GetChild(1).gameObject;
+        m_ArCoreSection = transform.GetChild(0).GetChild(0).gameObject;
+        m_ArKitSection = transform.GetChild(0).GetChild(1).gameObject;
 
         // ----- PLANE GENERATION INITIALIZATION -----
         m_ARCorePlaneGenerator = GameObject.FindObjectOfType<DetectedPlaneGenerator>();
         m_ARKitPlaneGenerator = GameObject.FindObjectOfType<PlaneDetectionController>();
-        m_ARCorePlaneGenerator.planesAreVisible = planesVisibility != PlanesVisibility.AlwaysHide;
-        m_ARKitPlaneGenerator.planesAreVisible = planesVisibility != PlanesVisibility.AlwaysHide;
 
         // ----- MANIPULATION INITIALIZATION -----
         m_ExtraLights = GameObject.Find("Lights");

@@ -20,6 +20,7 @@
 
 namespace GoogleARCore.Examples.ObjectManipulation
 {
+    using System.Collections;
     using UnityEngine;
 
     /// <summary>
@@ -174,7 +175,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// </summary>
         internal void Deselect()
         {
-            SelectedObject = null;
+            StartCoroutine(DeselectCoroutine());
         }
 
         /// <summary>
@@ -188,8 +189,23 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return;
             }
 
+            StartCoroutine(SelectCoroutine(target));
+        }
+
+        private IEnumerator SelectCoroutine(GameObject target)
+        {
             Deselect();
+
+            yield return new WaitForEndOfFrame();
+
             SelectedObject = target;
+        }
+
+        private IEnumerator DeselectCoroutine()
+        {
+            yield return new WaitForEndOfFrame();
+
+            SelectedObject = null;
         }
     }
 }

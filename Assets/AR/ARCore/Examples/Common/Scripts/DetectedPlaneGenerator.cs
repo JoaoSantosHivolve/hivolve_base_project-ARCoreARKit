@@ -78,10 +78,6 @@ namespace GoogleARCore.Examples.Common
 
         public void SetVisibility(bool visible)
         {
-            // If planes are always meant to be invisible, "planesAreVisible" is initialized as false, and is never changed
-            if (ArManager.Instance.planesVisibility == PlanesVisibility.AlwaysHide)
-                return;
-
             planesAreVisible = visible;
         }
     }

@@ -90,9 +90,8 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return;
 
             if (gesture.WasCancelled)
-            {
                 return;
-            }
+            
 
             // ----- Object Detection -----
             // If gesture is targeting an existing object we are done.
@@ -141,17 +140,6 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
                     PlaceObject(hitPose.position, hitPose.rotation, new TrackableHit());
                 }
-
-                //if (Physics.Raycast(Camera.main.ScreenToWorldPoint(gesture.StartPosition), Camera.main.transform.forward, out var hit))
-                //{
-                //    if (hit.collider.gameObject != null)
-                //    {
-                //        if (hit.collider.gameObject.GetComponent<ARPlane>() != null)
-                //        {
-                //            PlaceObject(hit.point, Quaternion.identity, new TrackableHit());
-                //        }
-                //    }
-                //}
             }
         }
 

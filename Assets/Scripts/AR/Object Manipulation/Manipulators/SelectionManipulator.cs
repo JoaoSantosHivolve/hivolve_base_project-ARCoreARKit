@@ -20,7 +20,9 @@
 
 namespace GoogleARCore.Examples.ObjectManipulation
 {
+    using System.Collections.Generic;
     using UnityEngine;
+    using UnityEngine.EventSystems;
 
     /// <summary>
     /// Controls the selection of an object through Tap gesture.
@@ -111,6 +113,12 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 Select();
             }
 
+            // Prevent deselect when pressing UI buttons
+            if (IsPointerOverUIObject())
+                return;
+            if (IsPointerOverUiObject(gesture))
+                return;
+
             // Raycast against the location the player touched to search for planes.
             TrackableHit hit;
             TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinPolygon;
@@ -119,6 +127,28 @@ namespace GoogleARCore.Examples.ObjectManipulation
             {
                 Deselect();
             }
+        }
+
+        private static bool IsPointerOverUiObject(TapGesture gesture)
+        {
+            // Referencing this code for GraphicRaycaster https://gist.github.com/stramit/ead7ca1f432f3c0f181f
+            // the ray cast appears to require only eventData.position.
+            var eventDataCurrentPosition = new PointerEventData(EventSystem.current)
+            {
+                position = new Vector2(gesture.StartPosition.x, gesture.StartPosition.y)
+            };
+
+            var results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+            return results.Count > 0;
+        }
+        private bool IsPointerOverUIObject()
+        {
+            PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+            eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+            return results.Count > 0;
         }
 
         /// <summary>
