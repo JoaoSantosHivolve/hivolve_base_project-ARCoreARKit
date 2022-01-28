@@ -37,6 +37,13 @@ namespace GoogleARCore.Examples.ObjectManipulation
         private ARRaycastManager m_RaycastManager;
 
         [SerializeField] private List<GameObject> m_PlacedObjects = new List<GameObject>();
+        public int PlacedObjectsCount
+        {
+            get
+            {
+                return m_PlacedObjects.Count;
+            }
+        }
 
         private void Awake()
         {
