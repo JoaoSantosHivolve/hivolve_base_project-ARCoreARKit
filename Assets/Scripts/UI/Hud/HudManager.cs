@@ -154,7 +154,7 @@ public class HudManager : MonoBehaviour
                 break;
             case HudButtonType.Tutorial:
                 button.AddComponent<HudButtonTutorial>();
-                button.GetComponent<HudButtonTutorial>().type = HudButtonOnClickType.Toggle;
+                button.GetComponent<HudButtonTutorial>().type = HudButtonOnClickType.OneClick;
                 break;
             default:
                 break;
@@ -187,7 +187,6 @@ public class HudManager : MonoBehaviour
                 break;
             case HudButtonType.Tutorial:
                 button.DefaultSprite = Resources.Load<Sprite>(path +  "TutorialDefault");
-                button.ActivatedSprite = Resources.Load<Sprite>(path +  "TutorialActivated");
                 break;
             default:
                 break;
@@ -200,9 +199,12 @@ public class HudManager : MonoBehaviour
         {
             #if UNITY_EDITOR
             DestroyImmediate(list[i].gameObject);
-            #else
-            Destroy(list[i].gameObject);
-            #endif
+#else
+            if(list[i] != null)
+            {
+                Destroy(list[i].gameObject);
+            }
+#endif
         }
 
         list = new List<GameObject>();

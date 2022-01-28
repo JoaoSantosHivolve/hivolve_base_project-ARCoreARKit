@@ -45,13 +45,13 @@ public abstract class HudButton : MonoBehaviour
     }
     public HudButtonOnClickType type;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         GetComponent<Button>().onClick.AddListener(OnClickListener);
 
         Activated = false;
     }
-    private void Update()
+    protected virtual void Update()
     {
         if(type == HudButtonOnClickType.Toggle)
         {

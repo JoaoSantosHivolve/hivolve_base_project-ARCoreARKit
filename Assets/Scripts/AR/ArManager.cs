@@ -3,7 +3,6 @@ using GoogleARCore.Examples.ObjectManipulation;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARFoundation.Samples;
 
 public enum Platform
@@ -32,7 +31,7 @@ public enum LoadingUI
 {
     Dots,
     Line,
-    Wheel
+    Circle
 }
 public enum HudButtonType
 {

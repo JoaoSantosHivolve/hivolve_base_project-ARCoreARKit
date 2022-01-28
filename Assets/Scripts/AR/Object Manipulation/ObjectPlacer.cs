@@ -21,11 +21,11 @@
 namespace GoogleARCore.Examples.ObjectManipulation
 {
     using GoogleARCore;
-    using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.XR.ARFoundation;
     using UnityEngine.XR.ARSubsystems;
+    using System.Collections.Generic;
 
     public class ObjectPlacer : Manipulator
     {
@@ -36,18 +36,19 @@ namespace GoogleARCore.Examples.ObjectManipulation
         static List<ARRaycastHit> s_Hits = new List<ARRaycastHit>();
         private ARRaycastManager m_RaycastManager;
 
-        [SerializeField] private List<GameObject> m_PlacedObjects = new List<GameObject>();
+        private List<GameObject> m_PlacedObjects;
         public int PlacedObjectsCount
         {
             get
             {
-                return m_PlacedObjects.Count;
+                return transform.childCount;
             }
         }
 
         private void Awake()
         {
             // Get main camera
+            m_PlacedObjects = new List<GameObject>();
             m_FirstPersonCamera = Camera.main;
             m_RaycastManager = GameObject.FindObjectOfType<ARRaycastManager>();
         }
@@ -63,10 +64,10 @@ namespace GoogleARCore.Examples.ObjectManipulation
                     ArManager.Instance.SetPlanesVisibility(true);
                     break;
                 case PlanesVisibility.HideOnObjectPlacement:
-                    ArManager.Instance.SetPlanesVisibility(m_PlacedObjects.Count == 0);
+                    ArManager.Instance.SetPlanesVisibility(PlacedObjectsCount == 0);
                     break;
                 case PlanesVisibility.ShowWhenInteracting:
-                    if(m_PlacedObjects.Count == 0)
+                    if(PlacedObjectsCount == 0)
                     {
                         ArManager.Instance.SetPlanesVisibility(true);
                     }
@@ -221,6 +222,9 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 manipulator.transform.parent = anchor.transform;
             }
 
+            // Set anchor's parent
+            manipulator.transform.parent.SetParent(transform);
+
             // Select the placed object.
             manipulator.GetComponent<Manipulator>().Select();
 
@@ -245,18 +249,18 @@ namespace GoogleARCore.Examples.ObjectManipulation
         {
             for (int i = 0; i < m_PlacedObjects.Count; i++)
             {
-                Destroy(m_PlacedObjects[i]);
+                Destroy(m_PlacedObjects[i].gameObject);
             }
-
             m_PlacedObjects = new List<GameObject>();
         }
         public void DeleteSelectedObject()
         {
+            var selectedObject = ManipulationSystem.Instance.SelectedObject.transform.parent.gameObject;
             // Remove object from placed objects list
-            m_PlacedObjects.Remove(ManipulationSystem.Instance.SelectedObject);
+            m_PlacedObjects.Remove(selectedObject);
 
             // Destroy object
-            Destroy(ManipulationSystem.Instance.SelectedObject);
+            Destroy(selectedObject);
 
             // Set selected object to null
             ManipulationSystem.Instance.Deselect();

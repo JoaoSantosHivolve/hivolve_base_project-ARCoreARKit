@@ -1,25 +1,11 @@
 using GoogleARCore;
 using GoogleARCore.Examples.ObjectManipulation;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
 public class ArHintsBehaviour : MonoBehaviour
 {
-    public bool ObjectsArePlaced
-    {
-        get
-        {
-            if(m_ObjectPlacer.PlacedObjectsCount > 0)
-            {
-                AlreadyPlacedAnObject = true;
-                return true;
-            }
-
-            return false;
-        }
-    }
     public bool PlanesAreDetected
     {
         get
@@ -83,7 +69,6 @@ public class ArHintsBehaviour : MonoBehaviour
         m_ScanVideo = transform.GetChild(0).gameObject;
         m_PlaceVideo = transform.GetChild(1).gameObject;
     }
-
     private void Update()
     {
         // An Object was already placed, so the player knows how to work with the app
@@ -98,7 +83,18 @@ public class ArHintsBehaviour : MonoBehaviour
         if (!HasObjectToPlace)
             return;
 
-        m_ScanVideo.SetActive(!PlanesAreDetected && !ObjectsArePlaced);
-        m_PlaceVideo.SetActive(PlanesAreDetected && !ObjectsArePlaced);
+        m_ScanVideo.SetActive(!PlanesAreDetected && !ObjectsArePlaced());
+        m_PlaceVideo.SetActive(PlanesAreDetected && !ObjectsArePlaced());
+    }
+
+    public bool ObjectsArePlaced()
+    {
+        if (m_ObjectPlacer.PlacedObjectsCount > 0)
+        {
+            AlreadyPlacedAnObject = true;
+            return true;
+        }
+
+        return false;
     }
 }
