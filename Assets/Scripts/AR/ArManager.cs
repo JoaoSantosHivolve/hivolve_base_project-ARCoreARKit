@@ -40,7 +40,8 @@ public enum HudButtonType
     AutoRotate,
     Zoom,
     Confirm,
-    Light
+    Light,
+    Tutorial
 }
 
 public class ArManager : Singleton<ArManager>
@@ -82,6 +83,12 @@ public class ArManager : Singleton<ArManager>
     [Range(0.2f, 0.3f)] public float buttonsSize;
     [Range(0.1f, 0.4f)] public float leftSideAnchor;
     [Range(0.6f, 0.9f)] public float rightSideAnchor;
+    public List<HudButtonType> ns_panel_Top_LeftButtons;
+    public List<HudButtonType> ns_panel_Top_MiddleButtons;
+    public List<HudButtonType> ns_panel_Top_RightButtons;
+    public List<HudButtonType> ns_panel_Bot_LeftButtons;
+    public List<HudButtonType> ns_panel_Bot_MiddleButtons;
+    public List<HudButtonType> ns_panel_Bot_RightButtons;
     public List<HudButtonType> selectedPanelTopLeftButtons;
     public List<HudButtonType> selectedPanelTopMiddleButtons;
     public List<HudButtonType> selectedPanelTopRightButtons;

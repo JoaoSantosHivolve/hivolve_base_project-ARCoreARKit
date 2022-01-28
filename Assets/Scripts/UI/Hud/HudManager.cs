@@ -21,39 +21,54 @@ public class HudManager : MonoBehaviour
         }
     }
 
-    private Animator m_AnimatorNotSelected;
+    private Animator m_AnimatorNS;
     private Animator m_AnimatorSelected;
     private GameObject m_HudButtonPrefab;
     public ArManager manager;
-    [Header("Selected Panel Top")]
-    private Transform m_SelectedTopParent;
+    [Header("--- NOT SELECTED --- Top")]
+    public List<GameObject> nS_Top_LeftButtons;
+    public List<GameObject> nS_Top_MiddleButtons;
+    public List<GameObject> nS_Top_RightButtons;
+    private Transform m_NS_TopParent;
+    [Header("--- NOT SELECTED --- Bot")]
+    public List<GameObject> nS_Bot_LeftButtons;
+    public List<GameObject> nS_Bot_MiddleButtons;
+    public List<GameObject> nS_Bot_RightButtons;
+    private Transform m_NS_BotParent;
+
+    [Header("--- SELECTED --- Top")]
     public List<GameObject> selectedTopLeftButtons;
     public List<GameObject> selectedTopMiddleButtons;
     public List<GameObject> selectedTopRightButtons;
-    [Header("Selected Panel Bottom")]
-    private Transform m_SelectedBottomParent;
+    private Transform m_SelectedTopParent;
+
+    [Header("--- SELECTED --- Bot")]
     public List<GameObject> selectedBottomLeftButtons;
     public List<GameObject> selectedBottomMiddleButtons;
     public List<GameObject> selectedBottomRightButtons;
+    private Transform m_SelectedBottomParent;
+
 
 
     private void Awake()
     {
-        m_AnimatorNotSelected = transform.GetChild(0).GetComponent<Animator>();
+        m_AnimatorNS = transform.GetChild(0).GetComponent<Animator>();
         m_AnimatorSelected = transform.GetChild(1).GetComponent<Animator>();
         m_HudButtonPrefab = Resources.Load<GameObject>("Prefabs/Hud/HudButton");
+
+        m_NS_TopParent = m_AnimatorNS.transform.GetChild(0).GetChild(1);
+        m_NS_BotParent = m_AnimatorNS.transform.GetChild(1).GetChild(1);
+
         m_SelectedTopParent = m_AnimatorSelected.transform.GetChild(0).GetChild(1);
         m_SelectedBottomParent = m_AnimatorSelected.transform.GetChild(1).GetChild(1);
 }
-
     private void Start()
     {
         SetupHud();
     }
-
     private void Update()
     {
-        m_AnimatorNotSelected.SetBool("Visible", !ObjectIsSelected);
+        m_AnimatorNS.SetBool("Visible", !ObjectIsSelected);
         m_AnimatorSelected.SetBool("Visible", ObjectIsSelected);
     }
 
@@ -137,6 +152,10 @@ public class HudManager : MonoBehaviour
                 button.AddComponent<HudButtonLight>();
                 button.GetComponent<HudButtonLight>().type = HudButtonOnClickType.Toggle;
                 break;
+            case HudButtonType.Tutorial:
+                button.AddComponent<HudButtonTutorial>();
+                button.GetComponent<HudButtonTutorial>().type = HudButtonOnClickType.Toggle;
+                break;
             default:
                 break;
         }
@@ -166,6 +185,10 @@ public class HudManager : MonoBehaviour
                 button.DefaultSprite = Resources.Load<Sprite>(path + "LightDefault");
                 button.ActivatedSprite = Resources.Load<Sprite>(path + "LightActivated");
                 break;
+            case HudButtonType.Tutorial:
+                button.DefaultSprite = Resources.Load<Sprite>(path +  "TutorialDefault");
+                button.ActivatedSprite = Resources.Load<Sprite>(path +  "TutorialActivated");
+                break;
             default:
                 break;
         }
@@ -187,6 +210,17 @@ public class HudManager : MonoBehaviour
 
     public void SetupHud()
     {
+        // Top Not Selected Panel
+        SetupButtonsOnHud(HudSide.Left, ref nS_Top_LeftButtons, manager.ns_panel_Top_LeftButtons, m_NS_TopParent);
+        SetupButtonsOnHud(HudSide.Middle, ref nS_Top_MiddleButtons, manager.ns_panel_Top_MiddleButtons, m_NS_TopParent);
+        SetupButtonsOnHud(HudSide.Right, ref nS_Top_RightButtons, manager.ns_panel_Top_RightButtons, m_NS_TopParent);
+
+        // Bottom Not Selected Panel
+        SetupButtonsOnHud(HudSide.Left, ref nS_Bot_LeftButtons, manager.ns_panel_Bot_LeftButtons, m_NS_BotParent);
+        SetupButtonsOnHud(HudSide.Middle, ref nS_Bot_MiddleButtons, manager.ns_panel_Bot_MiddleButtons, m_NS_BotParent);
+        SetupButtonsOnHud(HudSide.Right, ref nS_Bot_RightButtons, manager.ns_panel_Bot_RightButtons, m_NS_BotParent);
+
+
         // Top Selected Panel
         SetupButtonsOnHud(HudSide.Left, ref selectedTopLeftButtons, manager.selectedPanelTopLeftButtons, m_SelectedTopParent);
         SetupButtonsOnHud(HudSide.Middle, ref selectedTopMiddleButtons, manager.selectedPanelTopMiddleButtons, m_SelectedTopParent);

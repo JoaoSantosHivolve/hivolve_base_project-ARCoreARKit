@@ -17,8 +17,6 @@ namespace Common
 
         private void Awake()
         {
-            Canvas.ForceUpdateCanvases();
-
             var t = GetComponent<RectTransform>();
             float newLength = 0;
             switch (sideToAdjust)
@@ -36,7 +34,7 @@ namespace Common
             Canvas.ForceUpdateCanvases();
         }
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         private void Update()
         {
             Canvas.ForceUpdateCanvases();
