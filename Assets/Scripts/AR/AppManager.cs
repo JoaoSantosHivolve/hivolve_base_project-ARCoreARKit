@@ -49,6 +49,9 @@ public class AppManager : Singleton<AppManager>
     private GameObject m_ArCoreSection;
     private GameObject m_ArKitSection;
 
+    [Header("----- Language Settings -----")]
+    public Language appLanguage;
+
     [Header("----- Plane Generation Settings -----")]
     public Color planeColor;
     public Texture planeTextureARCore;
@@ -105,6 +108,9 @@ public class AppManager : Singleton<AppManager>
 #elif UNITY_IOS
         platform = Platform.IOS;
 #endif
+        // ----- SET LANGUAGE -----
+        UpdateLanguage();
+
         // ----- SECTION'S INITIALIZATION -----
         m_ArCoreSection = transform.GetChild(0).GetChild(0).gameObject;
         m_ArKitSection = transform.GetChild(0).GetChild(1).gameObject;
@@ -146,5 +152,11 @@ public class AppManager : Singleton<AppManager>
     void SetupHudViaInspector()
     {
         GameObject.FindObjectOfType<HudManager>().SetupHud();
+    }
+
+    [ContextMenu("UPDATE LANGUAGE")]
+    void UpdateLanguage()
+    {
+        GameObject.FindObjectOfType<LanguageManager>().Language = appLanguage;
     }
 }

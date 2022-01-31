@@ -11,9 +11,9 @@ public class IntroManager : MonoBehaviour
     {
         m_LoadingEffects = new List<GameObject>();
 
-        for (int i = 0; i < transform.GetChild(1).childCount; i++)
+        for (int i = 0; i < transform.GetChild(2).childCount; i++)
         {
-            var currChild = transform.GetChild(1).GetChild(i).gameObject;
+            var currChild = transform.GetChild(2).GetChild(i).gameObject;
             currChild.SetActive(false);
             m_LoadingEffects.Add(currChild);
         }
