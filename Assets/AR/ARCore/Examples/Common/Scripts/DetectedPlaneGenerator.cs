@@ -62,7 +62,7 @@ namespace GoogleARCore.Examples.Common
 
                 GameObject planeObject = Instantiate(DetectedPlanePrefab, Vector3.zero, Quaternion.identity, transform);
                 var ojectVisualizer = planeObject.GetComponent<DetectedPlaneVisualizer>();
-                ojectVisualizer.Initialize(_newPlanes[i], ArManager.Instance.planeColor, ArManager.Instance.planeTextureARCore);
+                ojectVisualizer.Initialize(_newPlanes[i], AppManager.Instance.planeColor, AppManager.Instance.planeTextureARCore);
                 _allPlanes.Add(ojectVisualizer);
             }
 

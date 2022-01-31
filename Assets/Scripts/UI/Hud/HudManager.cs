@@ -24,7 +24,7 @@ public class HudManager : MonoBehaviour
     private Animator m_AnimatorNS;
     private Animator m_AnimatorSelected;
     private GameObject m_HudButtonPrefab;
-    public ArManager manager;
+    public AppManager manager;
     [Header("--- NOT SELECTED --- Top")]
     public List<GameObject> nS_Top_LeftButtons;
     public List<GameObject> nS_Top_MiddleButtons;

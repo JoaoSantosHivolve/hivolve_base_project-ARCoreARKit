@@ -6,11 +6,11 @@ public class HudButtonLight : HudButton
 {
     protected override void CheckIfActivated()
     {
-        Activated = ArManager.Instance.m_ExtraLights.activeSelf;
+        Activated = AppManager.Instance.m_ExtraLights.activeSelf;
     }
 
     protected override void OnClick()
     {
-        ArManager.Instance.SetExtraLights(Activated);
+        AppManager.Instance.SetExtraLights(Activated);
     }
 }

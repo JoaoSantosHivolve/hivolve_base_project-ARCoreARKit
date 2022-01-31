@@ -52,32 +52,31 @@ namespace GoogleARCore.Examples.ObjectManipulation
             m_FirstPersonCamera = Camera.main;
             m_RaycastManager = GameObject.FindObjectOfType<ARRaycastManager>();
         }
-
         protected override void Update()
         {
             base.Update();
 
             // Control planes Visibility
-            switch (ArManager.Instance.planesVisibility)
+            switch (AppManager.Instance.planesVisibility)
             {
                 case PlanesVisibility.AlwaysVisible:
-                    ArManager.Instance.SetPlanesVisibility(true);
+                    AppManager.Instance.SetPlanesVisibility(true);
                     break;
                 case PlanesVisibility.HideOnObjectPlacement:
-                    ArManager.Instance.SetPlanesVisibility(PlacedObjectsCount == 0);
+                    AppManager.Instance.SetPlanesVisibility(PlacedObjectsCount == 0);
                     break;
                 case PlanesVisibility.ShowWhenInteracting:
                     if(PlacedObjectsCount == 0)
                     {
-                        ArManager.Instance.SetPlanesVisibility(true);
+                        AppManager.Instance.SetPlanesVisibility(true);
                     }
                     else
                     {
-                        ArManager.Instance.SetPlanesVisibility(ManipulationSystem.Instance.SelectedObject != null);
+                        AppManager.Instance.SetPlanesVisibility(ManipulationSystem.Instance.SelectedObject != null);
                     }
                     break;
                 case PlanesVisibility.AlwaysHide:
-                    ArManager.Instance.SetPlanesVisibility(false);
+                    AppManager.Instance.SetPlanesVisibility(false);
                     break;
                 default:
                     break;
@@ -119,7 +118,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return;
 
             // ----- Raycast Android -----
-            if (ArManager.Instance.platform == Platform.Android)
+            if (AppManager.Instance.platform == Platform.Android)
             {
                 if (Frame.Raycast(gesture.StartPosition.x, gesture.StartPosition.y, TrackableHitFlags.PlaneWithinPolygon, out var hit))
                 {
@@ -138,7 +137,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 }
             }
             // ----- Raycast iOS -----
-            else if (ArManager.Instance.platform == Platform.IOS)
+            else if (AppManager.Instance.platform == Platform.IOS)
             {
                 if (m_RaycastManager.Raycast(gesture.StartPosition, s_Hits, TrackableType.PlaneWithinPolygon))
                 {
@@ -211,7 +210,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
             placedObject.transform.parent = manipulator.transform;
 
             // Create anchor based on selected platform
-            if (ArManager.Instance.platform == Platform.Android)
+            if (AppManager.Instance.platform == Platform.Android)
             {
                 var anchor = hit.Trackable.CreateAnchor(hit.Pose);
                 manipulator.transform.parent = anchor.transform;
@@ -232,11 +231,11 @@ namespace GoogleARCore.Examples.ObjectManipulation
             m_PlacedObjects.Add(manipulator.transform.parent.gameObject);
 
             // Set selection visualizer sprite and color
-            placedObject.SetSelectionVisualizerColor(ArManager.Instance.selectionVisualizerColor);
-            placedObject.SetSelectionVisualizerSprite(ArManager.Instance.selectionVisualizerSprite);
+            placedObject.SetSelectionVisualizerColor(AppManager.Instance.selectionVisualizerColor);
+            placedObject.SetSelectionVisualizerSprite(AppManager.Instance.selectionVisualizerSprite);
 
             // Object face camera
-            if (ArManager.Instance.objectFaceCameraOnPlacement)
+            if (AppManager.Instance.objectFaceCameraOnPlacement)
             {
                 placedObject.transform.LookAt(Camera.main.transform.position);
                 var lea = placedObject.transform.localEulerAngles;
@@ -251,7 +250,15 @@ namespace GoogleARCore.Examples.ObjectManipulation
             {
                 Destroy(m_PlacedObjects[i].gameObject);
             }
+            
             m_PlacedObjects = new List<GameObject>();
+
+            // Delete remaining objects
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Destroy(transform.GetChild(i).gameObject);
+            }
+
         }
         public void DeleteSelectedObject()
         {

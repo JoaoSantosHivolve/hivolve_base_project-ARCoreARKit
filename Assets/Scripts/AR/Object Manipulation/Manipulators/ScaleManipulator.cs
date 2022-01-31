@@ -30,8 +30,8 @@ namespace GoogleARCore.Examples.ObjectManipulation
     /// </summary>
     public class ScaleManipulator : Manipulator
     {
-        public float minScale => ArManager.Instance.minScale;
-        public float maxScale => ArManager.Instance.maxScale;
+        public float minScale => AppManager.Instance.minScale;
+        public float maxScale => AppManager.Instance.maxScale;
 
         private const float _elasticRatioLimit = 0.8f;
         private const float _sensitivity = 0.75f;
@@ -93,7 +93,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 m_IsZoomed = value;
 
                 // Zoom placed object
-                transform.GetChild(0).localScale = value ? Vector3.one * ArManager.Instance.zoomAmount : Vector3.one;
+                transform.GetChild(0).localScale = value ? Vector3.one * AppManager.Instance.zoomAmount : Vector3.one;
 
                 // Reset scale
                 transform.localScale = Vector3.one;
@@ -136,7 +136,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return false;
             }
 
-            if(IsZoomed && !ArManager.Instance.canScaleIfZoomIsEnabled)
+            if(IsZoomed && !AppManager.Instance.canScaleIfZoomIsEnabled)
             {
                 return false;
             }
@@ -221,7 +221,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
         private void UpdateVisualizerValue()
         {
-            m_ObjectManager.SetScaleVisualizerValue(IsZoomed ? _currentScale * ArManager.Instance.zoomAmount : _currentScale);
+            m_ObjectManager.SetScaleVisualizerValue(IsZoomed ? _currentScale * AppManager.Instance.zoomAmount : _currentScale);
         }
     }
 }

@@ -43,7 +43,7 @@ public enum HudButtonType
     Tutorial
 }
 
-public class ArManager : Singleton<ArManager>
+public class AppManager : Singleton<AppManager>
 {
     public Platform platform { get; private set; }
     private GameObject m_ArCoreSection;

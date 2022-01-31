@@ -11,7 +11,7 @@ public class ArHintsBehaviour : MonoBehaviour
         get
         {
             // Android
-            if (ArManager.Instance.platform == Platform.Android)
+            if (AppManager.Instance.platform == Platform.Android)
             {
                 Session.GetTrackables<DetectedPlane>(_detectedPlanes, TrackableQueryFilter.All);
                 foreach (DetectedPlane plane in _detectedPlanes)
@@ -58,24 +58,24 @@ public class ArHintsBehaviour : MonoBehaviour
     private ObjectPlacer m_ObjectPlacer;
     private ARPlaneManager m_ARPlaneManager;
 
-    private GameObject m_ScanVideo;
-    private GameObject m_PlaceVideo;
+    private Animator m_ScanVideo;
+    private Animator m_PlaceVideo;
 
     private void Awake()
     {
         m_ObjectPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
         m_ARPlaneManager = GameObject.FindObjectOfType<ARPlaneManager>();
 
-        m_ScanVideo = transform.GetChild(0).gameObject;
-        m_PlaceVideo = transform.GetChild(1).gameObject;
+        m_ScanVideo = transform.GetChild(0).gameObject.GetComponent<Animator>();
+        m_PlaceVideo = transform.GetChild(1).gameObject.GetComponent<Animator>();
     }
     private void Update()
     {
         // An Object was already placed, so the player knows how to work with the app
         if (m_AlreadyPlacedAnObject)
         {
-            m_ScanVideo.SetActive(false);
-            m_PlaceVideo.SetActive(false);
+            m_ScanVideo.SetBool("Show", false);
+            m_PlaceVideo.SetBool("Show", false);
             return;
         }
 
@@ -83,8 +83,8 @@ public class ArHintsBehaviour : MonoBehaviour
         if (!HasObjectToPlace)
             return;
 
-        m_ScanVideo.SetActive(!PlanesAreDetected && !ObjectsArePlaced());
-        m_PlaceVideo.SetActive(PlanesAreDetected && !ObjectsArePlaced());
+        m_ScanVideo.SetBool("Show", !PlanesAreDetected && !ObjectsArePlaced());
+        m_PlaceVideo.SetBool("Show", PlanesAreDetected && !ObjectsArePlaced());
     }
 
     public bool ObjectsArePlaced()

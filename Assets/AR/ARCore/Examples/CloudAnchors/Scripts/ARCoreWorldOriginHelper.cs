@@ -65,11 +65,11 @@ namespace GoogleARCore.Examples.CloudAnchors
         private Transform _anchorTransform;
 
 
-        private ArManager m_Manager;
+        private AppManager m_Manager;
 
         private void Awake()
         {
-            m_Manager = ArManager.Instance;
+            m_Manager = AppManager.Instance;
         }
 
         public void Update()

@@ -104,7 +104,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// <param name="gesture">The current gesture.</param>
         protected override void OnStartManipulation(DragGesture gesture)
         {
-            if (ArManager.Instance.platform == Platform.Android)
+            if (AppManager.Instance.platform == Platform.Android)
             {
                 _groundingPlaneHeight = transform.parent.position.y;
             }
@@ -116,7 +116,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// <param name="gesture">The current gesture.</param>
         protected override void OnContinueManipulation(DragGesture gesture)
         {
-            if (ArManager.Instance.platform == Platform.Android)
+            if (AppManager.Instance.platform == Platform.Android)
             {
                 _isActive = true;
 
@@ -157,7 +157,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
                     }
                 }
             }
-            else if (ArManager.Instance.platform == Platform.IOS)
+            else if (AppManager.Instance.platform == Platform.IOS)
             {
                 if (m_RaycastManager.Raycast(gesture.Position, s_Hits, TrackableType.PlaneWithinPolygon))
                 {
@@ -174,7 +174,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// <param name="gesture">The current gesture.</param>
         protected override void OnEndManipulation(DragGesture gesture)
         {
-            if (ArManager.Instance.platform == Platform.Android)
+            if (AppManager.Instance.platform == Platform.Android)
             {
                 GameObject oldAnchor = transform.parent.gameObject;
 
@@ -214,7 +214,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
         private void UpdatePosition()
         {
-            if(ArManager.Instance.platform == Platform.Android)
+            if(AppManager.Instance.platform == Platform.Android)
             {
                 if (!_isActive)
                 {

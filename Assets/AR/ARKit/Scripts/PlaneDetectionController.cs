@@ -26,13 +26,13 @@ namespace UnityEngine.XR.ARFoundation.Samples
                     plane.gameObject.GetComponent<LineRenderer>().enabled = planesAreVisible;
 
                     // Set color
-                    var color = ArManager.Instance.planeColor;
+                    var color = AppManager.Instance.planeColor;
                     plane.gameObject.GetComponent<MeshRenderer>().material.color = color;
                     plane.gameObject.GetComponent<LineRenderer>().startColor = color;
                     plane.gameObject.GetComponent<LineRenderer>().endColor = color;
 
                     // Set texture
-                    var texture = ArManager.Instance.planeTextureARKit;
+                    var texture = AppManager.Instance.planeTextureARKit;
                     plane.gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
                 }
             }

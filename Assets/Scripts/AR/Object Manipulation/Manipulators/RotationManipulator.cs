@@ -39,7 +39,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
             if (autoRotate && !_isManipulating)
             {
                 //Rotate
-                transform.Rotate(0.0f, ArManager.Instance.autoRotationSpeed, 0.0f);
+                transform.Rotate(0.0f, AppManager.Instance.autoRotationSpeed, 0.0f);
             }
         }
 
@@ -60,7 +60,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return false;
             }
 
-            if (autoRotate && !ArManager.Instance.canRotateIfAutoRotateIsEnabled)
+            if (autoRotate && !AppManager.Instance.canRotateIfAutoRotateIsEnabled)
                 return false;
 
             return true;
@@ -83,7 +83,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 return false;
             }
 
-            if (autoRotate && !ArManager.Instance.canRotateIfAutoRotateIsEnabled)
+            if (autoRotate && !AppManager.Instance.canRotateIfAutoRotateIsEnabled)
                 return false;
 
             return true;

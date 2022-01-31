@@ -10,6 +10,6 @@ public class HudButtonDelete : HudButton
 
     protected override void OnClick()
     {
-        ArManager.Instance.DeleteSelectedObject();
+        AppManager.Instance.DeleteSelectedObject();
     }
 }

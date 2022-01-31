@@ -19,7 +19,7 @@ public class IntroManager : MonoBehaviour
         }
 
         // Set only selected active
-        m_Index = ((int)ArManager.Instance.loadingType);
+        m_Index = ((int)AppManager.Instance.loadingType);
         m_LoadingEffects[m_Index].SetActive(true);
 
         // Start intro effect
@@ -37,16 +37,16 @@ public class IntroManager : MonoBehaviour
 
         while (!ended)
         {
-            time = Mathf.Clamp(time + Time.deltaTime, 0, ArManager.Instance.loadingTime);
+            time = Mathf.Clamp(time + Time.deltaTime, 0, AppManager.Instance.loadingTime);
 
             // Line is selected
             if (m_Index == 1)
             {
-                var value = time / ArManager.Instance.loadingTime;
+                var value = time / AppManager.Instance.loadingTime;
                 m_LoadingEffects[m_Index].GetComponent<Animator>().SetFloat("Time", value);
             }
 
-            if (time >= ArManager.Instance.loadingTime)
+            if (time >= AppManager.Instance.loadingTime)
             {
                 ended = true;
             }

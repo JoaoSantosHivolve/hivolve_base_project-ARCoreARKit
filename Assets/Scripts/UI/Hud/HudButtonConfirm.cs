@@ -11,6 +11,6 @@ public class HudButtonConfirm : HudButton
 
     protected override void OnClick()
     {
-        ArManager.Instance.DeselectObject();
+        AppManager.Instance.DeselectObject();
     }
 }
