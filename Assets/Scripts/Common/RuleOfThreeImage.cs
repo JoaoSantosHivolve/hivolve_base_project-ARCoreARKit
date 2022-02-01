@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace Common
 {
@@ -17,6 +18,13 @@ namespace Common
 
         private void Awake()
         {
+            StartCoroutine(AdjustImage());
+        }
+
+        private IEnumerator AdjustImage()
+        {
+            yield return new WaitForEndOfFrame();
+
             var t = GetComponent<RectTransform>();
             float newLength = 0;
             switch (sideToAdjust)

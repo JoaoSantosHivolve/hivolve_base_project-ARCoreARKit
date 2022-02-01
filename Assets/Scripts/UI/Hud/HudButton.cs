@@ -76,4 +76,8 @@ public abstract class HudButton : MonoBehaviour
     {
         GetComponent<Image>().color = color;
     }
+    public void SetButtonVisibility(bool value)
+    {
+        GetComponent<Image>().enabled = value;
+    }
 }

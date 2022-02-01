@@ -40,7 +40,8 @@ public enum HudButtonType
     Zoom,
     Confirm,
     Light,
-    Tutorial
+    Tutorial,
+    Print
 }
 
 public class AppManager : Singleton<AppManager>
@@ -79,6 +80,11 @@ public class AppManager : Singleton<AppManager>
     public LoadingUI loadingType;
     [Range(1.00f, 5.00f)] public float loadingTime;
 
+    [Header("----- UI - Print Settings -----")]
+    public bool hideHudWhenTakingPrintscreen;
+    public bool applyOverlay;
+    public string overlayText;
+
     [Header("----- UI - Hud Settings -----")]
     public Color hudColor;
     public IconPack iconPack;
@@ -109,7 +115,7 @@ public class AppManager : Singleton<AppManager>
         platform = Platform.IOS;
 #endif
         // ----- SET LANGUAGE -----
-        UpdateLanguage();
+        //UpdateLanguage();
 
         // ----- SECTION'S INITIALIZATION -----
         m_ArCoreSection = transform.GetChild(0).GetChild(0).gameObject;
@@ -129,6 +135,13 @@ public class AppManager : Singleton<AppManager>
         // ----- ENABLE CORRECT SECTION -----
         m_ArCoreSection.SetActive(platform == Platform.Android);
         m_ArKitSection.SetActive(platform == Platform.IOS);
+    }
+
+    private void Start()
+    {
+        // ----- PRINT SETTINGS INITIALIZATION -----
+        GameObject.FindObjectOfType<PrintManager>().SetOverlayText(overlayText);
+        GameObject.FindObjectOfType<PrintManager>().SetOverlayVisibility(false);
     }
 
     public void SetPlanesVisibility(bool visible)
@@ -157,6 +170,11 @@ public class AppManager : Singleton<AppManager>
     [ContextMenu("UPDATE LANGUAGE")]
     void UpdateLanguage()
     {
+#if UNITY_EDITOR
         GameObject.FindObjectOfType<LanguageManager>().Language = appLanguage;
+#else
+        //LanguageManager.Instance.Language = appLanguage;
+#endif
+
     }
 }

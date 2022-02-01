@@ -11,7 +11,7 @@ public enum HudSide
 }
 
 [ExecuteInEditMode]
-public class HudManager : MonoBehaviour
+public class HudManager : SingletonDestroyable<HudManager>
 {
     public bool ObjectIsSelected
     {
@@ -50,8 +50,10 @@ public class HudManager : MonoBehaviour
 
 
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         m_AnimatorNS = transform.GetChild(0).GetComponent<Animator>();
         m_AnimatorSelected = transform.GetChild(1).GetComponent<Animator>();
         m_HudButtonPrefab = Resources.Load<GameObject>("Prefabs/Hud/HudButton");
@@ -156,6 +158,10 @@ public class HudManager : MonoBehaviour
                 button.AddComponent<HudButtonTutorial>();
                 button.GetComponent<HudButtonTutorial>().type = HudButtonOnClickType.OneClick;
                 break;
+            case HudButtonType.Print:
+                button.AddComponent<HudButtonPrint>();
+                button.GetComponent<HudButtonPrint>().type = HudButtonOnClickType.OneClick;
+                break;
             default:
                 break;
         }
@@ -186,7 +192,10 @@ public class HudManager : MonoBehaviour
                 button.ActivatedSprite = Resources.Load<Sprite>(path + "LightActivated");
                 break;
             case HudButtonType.Tutorial:
-                button.DefaultSprite = Resources.Load<Sprite>(path +  "TutorialDefault");
+                button.DefaultSprite = Resources.Load<Sprite>(path + "TutorialDefault");
+                break;
+            case HudButtonType.Print:
+                button.DefaultSprite = Resources.Load<Sprite>(path + "PrintDefault");
                 break;
             default:
                 break;
@@ -232,5 +241,42 @@ public class HudManager : MonoBehaviour
         SetupButtonsOnHud(HudSide.Left, ref selectedBottomLeftButtons, manager.selectedPanelBotLeftButtons, m_SelectedBottomParent);
         SetupButtonsOnHud(HudSide.Middle, ref selectedBottomMiddleButtons, manager.selectedPanelBotMiddleButtons, m_SelectedBottomParent);
         SetupButtonsOnHud(HudSide.Right, ref selectedBottomRightButtons, manager.selectedPanelBotRightButtons, m_SelectedBottomParent);
+    }
+    public void SetButtonsVisibility(bool value)
+    {
+        var buttonsList = new List<HudButton>();
+
+        foreach (var item in nS_Top_LeftButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+        foreach (var item in nS_Top_MiddleButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+        foreach (var item in nS_Top_RightButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+
+        foreach (var item in nS_Bot_LeftButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+        foreach (var item in nS_Bot_MiddleButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+        foreach (var item in nS_Bot_RightButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+
+        foreach (var item in selectedTopLeftButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+        foreach (var item in selectedTopMiddleButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+        foreach (var item in selectedTopRightButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+
+        foreach (var item in selectedBottomLeftButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+        foreach (var item in selectedBottomMiddleButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+        foreach (var item in selectedBottomRightButtons)
+            buttonsList.Add(item.GetComponent<HudButton>());
+
+        foreach (var item in buttonsList)
+        {
+            item.SetButtonVisibility(value);
+        }
     }
 }
