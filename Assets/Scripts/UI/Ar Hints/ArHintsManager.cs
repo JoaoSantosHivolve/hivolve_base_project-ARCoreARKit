@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-public class ArHintsBehaviour : MonoBehaviour
+public class ArHintsManager: SingletonDestroyable<ArHintsManager>
 {
     public bool PlanesAreDetected
     {

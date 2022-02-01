@@ -29,11 +29,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
     /// </summary>
     public class SelectionManipulator : Manipulator
     {
-        /// <summary>
-        /// The visualization game object that will become active when the object is selected.
-        /// </summary>
-        //public GameObject SelectionVisualization;
-        private PlacedObjectManager m_ObjectManager;
+        private PlacedObjectController m_ObjectManager;
 
         private float _scaledElevation;
 
@@ -65,7 +61,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
         private void Start()
         {
-            m_ObjectManager = transform.GetChild(0).GetComponent<PlacedObjectManager>();
+            m_ObjectManager = transform.GetChild(0).GetComponent<PlacedObjectController>();
         }
 
         /// <summary>

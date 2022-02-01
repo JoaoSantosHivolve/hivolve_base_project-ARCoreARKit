@@ -51,7 +51,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
             }
         }
 
-        private PlacedObjectManager m_ObjectManager;
+        private PlacedObjectController m_ObjectManager;
 
         private float _scaleDelta
         {
@@ -107,7 +107,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
         private void Start()
         {
-            m_ObjectManager = transform.GetChild(0).GetComponent<PlacedObjectManager>();
+            m_ObjectManager = transform.GetChild(0).GetComponent<PlacedObjectController>();
         }
 
         /// <summary>

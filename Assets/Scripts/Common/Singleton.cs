@@ -24,7 +24,7 @@ public class SingletonDestroyable<T> : MonoBehaviour where T : Component
 {
     public static T Instance;
 
-    protected virtual void Awake()
+    public void InitializeDestroyableSingleton()
     {
         if (Instance == null)
         {

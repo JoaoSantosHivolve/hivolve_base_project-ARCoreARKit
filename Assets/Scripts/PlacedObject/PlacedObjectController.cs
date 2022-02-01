@@ -6,17 +6,17 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [ExecuteInEditMode]
-public class PlacedObjectManager : MonoBehaviour
+public class PlacedObjectController : MonoBehaviour
 {
-    [Header("Settings")]
+    [Header("Settings Controller")]
     [Range(0.50f, 10f)] public float collisionWidth;
     [Range(0.15f, 2f)] public float collisionHeight;
 
-    [Header("Components")]
-    [SerializeField] private GameObject m_ObjectHolder;
-    [SerializeField] private GameObject m_SelectionCanvas;
-    [SerializeField] private GameObject m_ScaleCanvas;
-    [SerializeField] private CapsuleCollider m_CapsuleCollider;
+    // Object components
+    private GameObject m_ObjectHolder;
+    private GameObject m_SelectionCanvas;
+    private GameObject m_ScaleCanvas;
+    private CapsuleCollider m_CapsuleCollider;
 
     private void Awake()
     {

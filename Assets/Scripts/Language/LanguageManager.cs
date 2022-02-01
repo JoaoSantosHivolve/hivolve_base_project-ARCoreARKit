@@ -12,7 +12,7 @@ public enum Language
     Spanish
 }
 
-public class LanguageManager : Singleton<LanguageManager>
+public class LanguageManager : SingletonDestroyable<LanguageManager>
 {
     private Language m_Language;
     public Language Language
@@ -30,8 +30,6 @@ public class LanguageManager : Singleton<LanguageManager>
             }
         }
     }
-
-    //public Dropdown dropdown;
 
     public void SetLanguage(int value)
     {

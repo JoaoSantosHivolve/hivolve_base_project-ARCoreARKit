@@ -30,7 +30,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
     public class ObjectPlacer : Manipulator
     {
         private Camera m_FirstPersonCamera;
-        public PlacedObjectManager objectToInstantiate;
+        public PlacedObjectController objectToInstantiate;
         public GameObject ManipulatorPrefab;
 
         static List<ARRaycastHit> s_Hits = new List<ARRaycastHit>();

@@ -129,13 +129,13 @@ namespace GoogleARCore.Examples.ObjectManipulation
         /// Gets the current selected object.
         /// </summary>
         public GameObject SelectedObject { get; private set;  }
-        public PlacedObjectManager SelectedObjectManager
+        public PlacedObjectController SelectedObjectManager
         {
             get 
             {
                 if(SelectedObject != null)
                 {
-                    return SelectedObject.transform.GetChild(0).GetComponent<PlacedObjectManager>();
+                    return SelectedObject.transform.GetChild(0).GetComponent<PlacedObjectController>();
                 }
                 return null;
             }

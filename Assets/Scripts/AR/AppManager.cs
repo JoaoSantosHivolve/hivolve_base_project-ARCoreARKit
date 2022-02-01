@@ -107,15 +107,21 @@ public class AppManager : Singleton<AppManager>
     protected override void Awake()
     {
         base.Awake();
-
         // Set platform
 #if UNITY_ANDROID
         platform = Platform.Android;
 #elif UNITY_IOS
         platform = Platform.IOS;
 #endif
+        // Initialize all managers
+        GameObject.FindObjectOfType<LanguageManager>().InitializeDestroyableSingleton();
+        GameObject.FindObjectOfType<IntroManager>().InitializeDestroyableSingleton();
+        GameObject.FindObjectOfType<PrintManager>().InitializeDestroyableSingleton();
+        GameObject.FindObjectOfType<HudManager>().InitializeDestroyableSingleton();
+        GameObject.FindObjectOfType<ArHintsManager>().InitializeDestroyableSingleton();
+
         // ----- SET LANGUAGE -----
-        //UpdateLanguage();
+        UpdateLanguage();
 
         // ----- SECTION'S INITIALIZATION -----
         m_ArCoreSection = transform.GetChild(0).GetChild(0).gameObject;
@@ -155,7 +161,7 @@ public class AppManager : Singleton<AppManager>
             m_ARKitPlaneGenerator.SetVisibility(visible);
         }
     }
-    public void SetObjectToInstantiate(PlacedObjectManager objectToInstantiate) => m_ObjectPlacer.objectToInstantiate = objectToInstantiate;
+    public void SetObjectToInstantiate(PlacedObjectController objectToInstantiate) => m_ObjectPlacer.objectToInstantiate = objectToInstantiate;
     public void DeselectObject() => ManipulationSystem.Instance.Deselect();
     public void DeleteAllObjects() => m_ObjectPlacer.DeleteAllObjects();
     public void DeleteSelectedObject() => m_ObjectPlacer.DeleteSelectedObject();
@@ -173,7 +179,7 @@ public class AppManager : Singleton<AppManager>
 #if UNITY_EDITOR
         GameObject.FindObjectOfType<LanguageManager>().Language = appLanguage;
 #else
-        //LanguageManager.Instance.Language = appLanguage;
+        LanguageManager.Instance.Language = appLanguage;
 #endif
 
     }

@@ -48,12 +48,8 @@ public class HudManager : SingletonDestroyable<HudManager>
     public List<GameObject> selectedBottomRightButtons;
     private Transform m_SelectedBottomParent;
 
-
-
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-
         m_AnimatorNS = transform.GetChild(0).GetComponent<Animator>();
         m_AnimatorSelected = transform.GetChild(1).GetComponent<Animator>();
         m_HudButtonPrefab = Resources.Load<GameObject>("Prefabs/Hud/HudButton");

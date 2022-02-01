@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IntroManager : MonoBehaviour
+public class IntroManager : SingletonDestroyable<IntroManager>
 {
     private List<GameObject> m_LoadingEffects;
     private int m_Index;
@@ -25,7 +25,6 @@ public class IntroManager : MonoBehaviour
         // Start intro effect
         StartCoroutine(IntroTransition());
     }
-
 
     private IEnumerator IntroTransition()
     {

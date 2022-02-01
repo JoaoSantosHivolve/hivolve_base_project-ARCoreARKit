@@ -55,10 +55,8 @@ public class PrintManager : SingletonDestroyable<PrintManager>
     }
     private MemoryStream m_MemoryStream;
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-        
         m_Animator = GetComponent<Animator>();
         m_Background = transform.GetChild(0).GetComponent<RawImage>();
         m_InputField = transform.GetChild(1).GetComponent<TMP_InputField>();
