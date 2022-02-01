@@ -53,7 +53,5 @@ public class LanguageManager : SingletonDestroyable<LanguageManager>
             default:
                 break;
         }
-
-        //dropdown.value = value;
     }
 }

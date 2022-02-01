@@ -138,16 +138,13 @@ public class AppManager : Singleton<AppManager>
         // ----- OBJECT PLACEMENT INITIALIZATION -----
         m_ObjectPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
 
+        // ----- PRINT SETTINGS INITIALIZATION -----
+        PrintManager.Instance.SetOverlayText(overlayText);
+        PrintManager.Instance.SetOverlayVisibility(false);
+
         // ----- ENABLE CORRECT SECTION -----
         m_ArCoreSection.SetActive(platform == Platform.Android);
         m_ArKitSection.SetActive(platform == Platform.IOS);
-    }
-
-    private void Start()
-    {
-        // ----- PRINT SETTINGS INITIALIZATION -----
-        GameObject.FindObjectOfType<PrintManager>().SetOverlayText(overlayText);
-        GameObject.FindObjectOfType<PrintManager>().SetOverlayVisibility(false);
     }
 
     public void SetPlanesVisibility(bool visible)
