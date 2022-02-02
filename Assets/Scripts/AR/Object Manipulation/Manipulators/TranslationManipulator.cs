@@ -191,6 +191,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 desiredPose.position = transform.parent.TransformPoint(desiredLocalPosition);
 
                 Anchor newAnchor = _lastHit.Trackable.CreateAnchor(desiredPose);
+                newAnchor.transform.parent = GameObject.Find("Object Generator").transform;
                 transform.parent = newAnchor.transform;
 
                 Destroy(oldAnchor);

@@ -31,10 +31,19 @@ public class LanguageManager : SingletonDestroyable<LanguageManager>
         }
     }
 
+    private Animator m_LanguagePanel;
+    private Button m_PanelCloseButton;
+
     public void Init()
     {
         Language = AppManager.Instance.appLanguage;
+        m_LanguagePanel = GameObject.Find("Language Panel").GetComponent<Animator>();
+        m_PanelCloseButton = m_LanguagePanel.transform.GetChild(2).GetComponent<Button>();
+        m_PanelCloseButton.onClick.AddListener(ClosePanel);
     }
+
+    private void ClosePanel() => SetPanelVisibility(false);
+    public void SetPanelVisibility(bool value) => m_LanguagePanel.SetBool("Enter", value);
 
     public void SetLanguage(int value)
     {
