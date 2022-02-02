@@ -61,7 +61,7 @@ public class ArHintsManager: SingletonDestroyable<ArHintsManager>
     private Animator m_ScanVideo;
     private Animator m_PlaceVideo;
 
-    private void Awake()
+    public void Init()
     {
         m_ObjectPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
         m_ARPlaneManager = GameObject.FindObjectOfType<ARPlaneManager>();

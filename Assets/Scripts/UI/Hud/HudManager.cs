@@ -9,7 +9,6 @@ public enum HudSide
     Middle,
     Right
 }
-
 [ExecuteInEditMode]
 public class HudManager : SingletonDestroyable<HudManager>
 {
@@ -48,10 +47,11 @@ public class HudManager : SingletonDestroyable<HudManager>
     public List<GameObject> selectedBottomRightButtons;
     private Transform m_SelectedBottomParent;
 
-    private void Awake()
+    public void Init()
     {
         m_AnimatorNS = transform.GetChild(0).GetComponent<Animator>();
         m_AnimatorSelected = transform.GetChild(1).GetComponent<Animator>();
+        
         m_HudButtonPrefab = Resources.Load<GameObject>("Prefabs/Hud/HudButton");
 
         m_NS_TopParent = m_AnimatorNS.transform.GetChild(0).GetChild(1);
@@ -59,7 +59,24 @@ public class HudManager : SingletonDestroyable<HudManager>
 
         m_SelectedTopParent = m_AnimatorSelected.transform.GetChild(0).GetChild(1);
         m_SelectedBottomParent = m_AnimatorSelected.transform.GetChild(1).GetChild(1);
-}
+    }
+
+#if UNITY_EDITOR
+    public void Awake()
+    {
+        m_AnimatorNS = transform.GetChild(0).GetComponent<Animator>();
+        m_AnimatorSelected = transform.GetChild(1).GetComponent<Animator>();
+
+        m_HudButtonPrefab = Resources.Load<GameObject>("Prefabs/Hud/HudButton");
+
+        m_NS_TopParent = m_AnimatorNS.transform.GetChild(0).GetChild(1);
+        m_NS_BotParent = m_AnimatorNS.transform.GetChild(1).GetChild(1);
+
+        m_SelectedTopParent = m_AnimatorSelected.transform.GetChild(0).GetChild(1);
+        m_SelectedBottomParent = m_AnimatorSelected.transform.GetChild(1).GetChild(1);
+    }
+#endif
+
     private void Start()
     {
         SetupHud();
@@ -238,6 +255,7 @@ public class HudManager : SingletonDestroyable<HudManager>
         SetupButtonsOnHud(HudSide.Middle, ref selectedBottomMiddleButtons, manager.selectedPanelBotMiddleButtons, m_SelectedBottomParent);
         SetupButtonsOnHud(HudSide.Right, ref selectedBottomRightButtons, manager.selectedPanelBotRightButtons, m_SelectedBottomParent);
     }
+
     public void SetButtonsVisibility(bool value)
     {
         var buttonsList = new List<HudButton>();

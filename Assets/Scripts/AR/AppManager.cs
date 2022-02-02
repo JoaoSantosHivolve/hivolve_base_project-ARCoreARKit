@@ -113,15 +113,18 @@ public class AppManager : Singleton<AppManager>
 #elif UNITY_IOS
         platform = Platform.IOS;
 #endif
-        // Initialize all managers
+        // ----- INITIALIZE ALL MANAGERS -----
         GameObject.FindObjectOfType<LanguageManager>().InitializeDestroyableSingleton();
         GameObject.FindObjectOfType<IntroManager>().InitializeDestroyableSingleton();
         GameObject.FindObjectOfType<PrintManager>().InitializeDestroyableSingleton();
         GameObject.FindObjectOfType<HudManager>().InitializeDestroyableSingleton();
         GameObject.FindObjectOfType<ArHintsManager>().InitializeDestroyableSingleton();
 
-        // ----- SET LANGUAGE -----
-        UpdateLanguage();
+        LanguageManager.Instance.Init();
+        IntroManager.Instance.Init();
+        HudManager.Instance.Init();
+        ArHintsManager.Instance.Init();
+        PrintManager.Instance.Init();
 
         // ----- SECTION'S INITIALIZATION -----
         m_ArCoreSection = transform.GetChild(0).GetChild(0).gameObject;
@@ -137,10 +140,6 @@ public class AppManager : Singleton<AppManager>
 
         // ----- OBJECT PLACEMENT INITIALIZATION -----
         m_ObjectPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
-
-        // ----- PRINT SETTINGS INITIALIZATION -----
-        PrintManager.Instance.SetOverlayText(overlayText);
-        PrintManager.Instance.SetOverlayVisibility(false);
 
         // ----- ENABLE CORRECT SECTION -----
         m_ArCoreSection.SetActive(platform == Platform.Android);

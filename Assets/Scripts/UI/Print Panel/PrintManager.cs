@@ -55,16 +55,19 @@ public class PrintManager : SingletonDestroyable<PrintManager>
     }
     private MemoryStream m_MemoryStream;
 
-    private void Awake()
+    public void Init()
     {
         m_Animator = GetComponent<Animator>();
-        m_Background = transform.GetChild(0).GetComponent<RawImage>();
-        m_InputField = transform.GetChild(1).GetComponent<TMP_InputField>();
-        m_SendButton = transform.GetChild(2).GetComponent<Button>();
-        m_CloseButton = transform.GetChild(3).GetComponent<Button>();
-        m_WaterMarkOverlay = transform.GetChild(4).gameObject;
+        m_Background = transform.GetChild(1).GetComponent<RawImage>();
+        m_InputField = transform.GetChild(2).GetComponent<TMP_InputField>();
+        m_SendButton = transform.GetChild(3).GetComponent<Button>();
+        m_CloseButton = transform.GetChild(4).GetComponent<Button>();
+        m_WaterMarkOverlay = transform.GetChild(5).gameObject;
 
         m_SendButton.onClick.AddListener(SendEmail);
+
+        m_WaterMarkOverlay.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = AppManager.Instance.overlayText;
+        SetOverlayVisibility(false);
     }
     private void Start()
     {
@@ -79,9 +82,7 @@ public class PrintManager : SingletonDestroyable<PrintManager>
     public void CheckEmailInput() => m_SendButton.interactable = IsValidEmail(m_InputField.text);
     public void OpenPrintPanel() => m_Animator.SetBool("Visible", true);
     public void ClosePrintPanel() => m_Animator.SetBool("Visible", false);
-    public void SetOverlayText(string text) => m_WaterMarkOverlay.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
     public void SetOverlayVisibility(bool value) => m_WaterMarkOverlay.SetActive(value);
-            
 
     private void SendEmail()
     {

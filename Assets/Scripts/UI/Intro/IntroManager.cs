@@ -7,7 +7,7 @@ public class IntroManager : SingletonDestroyable<IntroManager>
     private List<GameObject> m_LoadingEffects;
     private int m_Index;
 
-    private void Awake()
+    public void Init()
     {
         m_LoadingEffects = new List<GameObject>();
 

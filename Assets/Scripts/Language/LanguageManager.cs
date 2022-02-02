@@ -31,6 +31,11 @@ public class LanguageManager : SingletonDestroyable<LanguageManager>
         }
     }
 
+    public void Init()
+    {
+        Language = AppManager.Instance.appLanguage;
+    }
+
     public void SetLanguage(int value)
     {
         switch (value)
