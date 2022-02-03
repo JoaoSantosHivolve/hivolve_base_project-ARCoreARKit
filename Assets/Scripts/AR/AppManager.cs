@@ -79,6 +79,7 @@ public class AppManager : Singleton<AppManager>
     [Header("----- UI - Intro Settings -----")]
     public LoadingUI loadingType;
     [Range(1.00f, 5.00f)] public float loadingTime;
+    public bool playIntroSound;
 
     [Header("----- UI - Print Settings -----")]
     public bool hideHudWhenTakingPrintscreen;
@@ -88,6 +89,7 @@ public class AppManager : Singleton<AppManager>
     [Header("----- UI - Hud Settings -----")]
     public Color hudColor;
     public IconPack iconPack;
+    [Range(0.0f, 1.0f)] public float buttonVolume;
     [Range(0.2f, 0.3f)] public float buttonsSize;
     [Range(0.1f, 0.4f)] public float leftSideAnchor;
     [Range(0.6f, 0.9f)] public float rightSideAnchor;

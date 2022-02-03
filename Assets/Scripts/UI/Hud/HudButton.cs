@@ -41,14 +41,18 @@ public abstract class HudButton : MonoBehaviour
             m_Activated = value;
 
             GetComponent<Image>().sprite = value ? m_ActivatedSprite : DefaultSprite;
+
+            if(m_OnClip != null)
+                GetComponent<AudioSource>().clip = value ? m_OnClip : m_OffClip;
         }
     }
     public HudButtonOnClickType type;
+    private AudioClip m_OnClip;
+    private AudioClip m_OffClip;
 
     protected virtual void Awake()
     {
         GetComponent<Button>().onClick.AddListener(OnClickListener);
-
         Activated = false;
     }
     protected virtual void Update()
@@ -66,6 +70,8 @@ public abstract class HudButton : MonoBehaviour
             Activated = !Activated;
         }
 
+        GetComponent<AudioSource>().Play();
+
         OnClick();
     }
 
@@ -79,5 +85,21 @@ public abstract class HudButton : MonoBehaviour
     public void SetButtonVisibility(bool value)
     {
         GetComponent<Image>().enabled = value;
+    }
+    public void SetVolume(float volume)
+    {
+        GetComponent<AudioSource>().volume = volume;
+    }
+    public void SetAudioClip(AudioClip clip)
+    {
+        m_OnClip = clip;
+        GetComponent<AudioSource>().clip = clip;
+    }
+    public void SetAudioClip(AudioClip onClip, AudioClip offClip)
+    {
+        m_OnClip = onClip;
+        m_OffClip = offClip;
+
+        GetComponent<AudioSource>().clip = m_OnClip;
     }
 }

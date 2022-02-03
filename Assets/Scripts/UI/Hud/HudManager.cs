@@ -111,6 +111,8 @@ public class HudManager : SingletonDestroyable<HudManager>
             newButton.GetComponent<HudButton>().SetColor(manager.hudColor);
             // Set button sprites
             AddButtonSprites(newButton.GetComponent<HudButton>(), item);
+            // Set button audio clips
+            AddButtonSounds(newButton.GetComponent<HudButton>(), item);
             // Add button to list
             panelButtons.Add(newButton);
         }
@@ -213,7 +215,41 @@ public class HudManager : SingletonDestroyable<HudManager>
             default:
                 break;
         }
+    }
+    private void AddButtonSounds(HudButton button, HudButtonType type)
+    {
+        var path = "Sounds/Hud/";
 
+        // Set button volume
+        button.SetVolume(manager.buttonVolume);
+
+        // Set button audio clip
+        switch (type)
+        {
+            case HudButtonType.Delete:
+                button.SetAudioClip(Resources.Load<AudioClip>(path + "Delete"));
+                break;
+            case HudButtonType.AutoRotate:
+                button.SetAudioClip(Resources.Load<AudioClip>(path + "RotateOn"), Resources.Load<AudioClip>(path + "RotateOff"));
+                break;
+            case HudButtonType.Zoom:
+                button.SetAudioClip(Resources.Load<AudioClip>(path + "ZoomOn"), Resources.Load<AudioClip>(path + "ZoomOff"));
+                break;
+            case HudButtonType.Confirm:
+                button.SetAudioClip(Resources.Load<AudioClip>(path + "PlaceObject"));
+                break;
+            case HudButtonType.Light:
+                button.SetAudioClip(Resources.Load<AudioClip>(path + "LightOn"), Resources.Load<AudioClip>(path + "LightOff"));
+                break;
+            case HudButtonType.Tutorial:
+                button.SetAudioClip(Resources.Load<AudioClip>(path + "Tutorial"));
+                break;
+            case HudButtonType.Print:
+                button.SetAudioClip(Resources.Load<AudioClip>(path + "Print"));
+                break;
+            default:
+                break;
+        }
     }
     private void DeleteButtonsOnList(ref List<GameObject> list)
     {

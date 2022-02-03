@@ -6,6 +6,8 @@ public class IntroManager : SingletonDestroyable<IntroManager>
 {
     private List<GameObject> m_LoadingEffects;
     private int m_Index;
+    private AudioSource m_AudioSource;
+
 
     public void Init()
     {
@@ -21,6 +23,11 @@ public class IntroManager : SingletonDestroyable<IntroManager>
         // Set only selected active
         m_Index = ((int)AppManager.Instance.loadingType);
         m_LoadingEffects[m_Index].SetActive(true);
+
+        // Get AudioSource
+        m_AudioSource = GetComponent<AudioSource>();
+        m_AudioSource.volume = AppManager.Instance.buttonVolume;
+        m_AudioSource.clip = Resources.Load<AudioClip>("Sounds/Hud/Intro");
 
         // Start intro effect
         StartCoroutine(IntroTransition());
@@ -48,6 +55,10 @@ public class IntroManager : SingletonDestroyable<IntroManager>
             if (time >= AppManager.Instance.loadingTime)
             {
                 ended = true;
+
+                // Play intro sound clip
+                if(AppManager.Instance.playIntroSound)
+                    m_AudioSource.Play();
             }
 
             yield return null;
