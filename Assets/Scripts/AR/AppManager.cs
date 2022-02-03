@@ -54,23 +54,23 @@ public class AppManager : Singleton<AppManager>
     public Language appLanguage;
 
     [Header("----- Plane Generation Settings -----")]
+    public PlanesVisibility planesVisibility;
     public Color planeColor;
     public Texture planeTextureARCore;
     public Texture planeTextureARKit;
-    public PlanesVisibility planesVisibility;
     private DetectedPlaneGenerator m_ARCorePlaneGenerator;
     private PlaneDetectionController m_ARKitPlaneGenerator;
    
     [Header("----- Object Placer Settings -----")]
-    public Sprite selectionVisualizerSprite;
     public Color selectionVisualizerColor;
+    public Sprite selectionVisualizerSprite;
     public bool objectFaceCameraOnPlacement;
 
     [Header("----- Manipulation Settings -----")]
     public bool canRotateIfAutoRotateIsEnabled;
-    [Range(0.1f, 1f)] public float autoRotationSpeed;
     public bool canScaleIfZoomIsEnabled;
-    [Range(2f, 10f)] public float zoomAmount;
+    [Range(0.1f, 1f)]   public float autoRotationSpeed;
+    [Range(2f, 10f)]    public float zoomAmount;
     [Range(0.1f, 1.0f)] public float minScale;
     [Range(1.0f, 2.0f)] public float maxScale;
     private ObjectPlacer m_ObjectPlacer;
@@ -78,8 +78,8 @@ public class AppManager : Singleton<AppManager>
 
     [Header("----- UI - Intro Settings -----")]
     public LoadingUI loadingType;
-    [Range(1.00f, 5.00f)] public float loadingTime;
     public bool playIntroSound;
+    [Range(1.00f, 5.00f)] public float loadingTime;
 
     [Header("----- UI - Print Settings -----")]
     public bool hideHudWhenTakingPrintscreen;
@@ -87,8 +87,8 @@ public class AppManager : Singleton<AppManager>
     public string overlayText;
 
     [Header("----- UI - Hud Settings -----")]
-    public Color hudColor;
     public IconPack iconPack;
+    public Color hudColor;
     [Range(0.0f, 1.0f)] public float buttonVolume;
     [Range(0.2f, 0.3f)] public float buttonsSize;
     [Range(0.1f, 0.4f)] public float leftSideAnchor;
