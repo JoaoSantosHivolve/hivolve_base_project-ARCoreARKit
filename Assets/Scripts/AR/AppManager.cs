@@ -58,6 +58,11 @@ public class AppManager : Singleton<AppManager>
     public Color planeColor;
     public Texture planeTextureARCore;
     public Texture planeTextureARKit;
+    [Tooltip("Only works with Always Visible")] public bool addObjectInPlaneEffect;
+    public Material planeMaterialARCoreDefault;
+    public Material planeMaterialARCoreEffect;
+    public Material planeMaterialARKitDefault;
+    public Material planeMaterialARKitEffect;
     private DetectedPlaneGenerator m_ARCorePlaneGenerator;
     private PlaneDetectionController m_ARKitPlaneGenerator;
    
@@ -135,7 +140,7 @@ public class AppManager : Singleton<AppManager>
         // ----- PLANE GENERATION INITIALIZATION -----
         m_ARCorePlaneGenerator = GameObject.FindObjectOfType<DetectedPlaneGenerator>();
         m_ARKitPlaneGenerator = GameObject.FindObjectOfType<PlaneDetectionController>();
-
+        m_ARCorePlaneGenerator.planeMaterial = planeMaterialARCoreDefault;
         // ----- MANIPULATION INITIALIZATION -----
         m_ExtraLights = GameObject.Find("Lights");
         m_ExtraLights.SetActive(false);
@@ -157,6 +162,17 @@ public class AppManager : Singleton<AppManager>
         else if (platform == Platform.IOS)
         {
             m_ARKitPlaneGenerator.SetVisibility(visible);
+        }
+    }
+    public void SetPlanesEffect(bool state)
+    {
+        if (platform == Platform.Android)
+        {
+            m_ARCorePlaneGenerator.SetEffect(state);
+        }
+        else if (platform == Platform.IOS)
+        {
+            m_ARKitPlaneGenerator.SetEffect(state);
         }
     }
     public void SetObjectToInstantiate(PlacedObjectController objectToInstantiate) => m_ObjectPlacer.objectToInstantiate = objectToInstantiate;

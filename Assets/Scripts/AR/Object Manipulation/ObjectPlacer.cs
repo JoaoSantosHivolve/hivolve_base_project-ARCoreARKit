@@ -37,49 +37,33 @@ namespace GoogleARCore.Examples.ObjectManipulation
         private ARRaycastManager m_RaycastManager;
 
         private List<GameObject> m_PlacedObjects;
-        public int PlacedObjectsCount
-        {
-            get
-            {
-                return transform.childCount;
-            }
-        }
+        private int m_LastPlacedObjectCount;
+        public int placedObjectsCount;
+        
+        public GameObject placedObject;
 
         private void Awake()
         {
-            // Get main camera
             m_PlacedObjects = new List<GameObject>();
             m_FirstPersonCamera = Camera.main;
             m_RaycastManager = GameObject.FindObjectOfType<ARRaycastManager>();
+
+            placedObjectsCount = 0;
+            m_LastPlacedObjectCount = 0;
+            UpdatePlaneVisibility();
         }
         protected override void Update()
         {
             base.Update();
+        }
+        private void LateUpdate()
+        {
+            placedObjectsCount = transform.childCount;
 
-            // Control planes Visibility
-            switch (AppManager.Instance.planesVisibility)
+            if (placedObjectsCount != m_LastPlacedObjectCount)
             {
-                case PlanesVisibility.AlwaysVisible:
-                    AppManager.Instance.SetPlanesVisibility(true);
-                    break;
-                case PlanesVisibility.HideOnObjectPlacement:
-                    AppManager.Instance.SetPlanesVisibility(PlacedObjectsCount == 0);
-                    break;
-                case PlanesVisibility.ShowWhenInteracting:
-                    if(PlacedObjectsCount == 0)
-                    {
-                        AppManager.Instance.SetPlanesVisibility(true);
-                    }
-                    else
-                    {
-                        AppManager.Instance.SetPlanesVisibility(ManipulationSystem.Instance.SelectedObject != null);
-                    }
-                    break;
-                case PlanesVisibility.AlwaysHide:
-                    AppManager.Instance.SetPlanesVisibility(false);
-                    break;
-                default:
-                    break;
+                m_LastPlacedObjectCount = placedObjectsCount;
+                UpdatePlaneVisibility();
             }
         }
 
@@ -242,6 +226,44 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 lea.z = 0; lea.x = 0;
                 placedObject.transform.localEulerAngles = lea;
             }
+
+            this.placedObject = placedObject.gameObject;
+        }
+
+        private void UpdatePlaneVisibility()
+        {
+            switch (AppManager.Instance.planesVisibility)
+            {
+                case PlanesVisibility.AlwaysVisible:
+                    AppManager.Instance.SetPlanesVisibility(true);
+                    if (AppManager.Instance.addObjectInPlaneEffect)
+                    {
+                        AppManager.Instance.SetPlanesEffect(placedObjectsCount != 0);
+                    }
+                    break;
+
+                case PlanesVisibility.HideOnObjectPlacement:
+                    AppManager.Instance.SetPlanesVisibility(placedObjectsCount == 0);
+                    break;
+
+                case PlanesVisibility.ShowWhenInteracting:
+                    if (placedObjectsCount == 0)
+                    {
+                        AppManager.Instance.SetPlanesVisibility(true);
+                    }
+                    else
+                    {
+                        AppManager.Instance.SetPlanesVisibility(ManipulationSystem.Instance.SelectedObject != null);
+                    }
+                    break;
+
+                case PlanesVisibility.AlwaysHide:
+                    AppManager.Instance.SetPlanesVisibility(false);
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         public void DeleteAllObjects()
@@ -259,6 +281,7 @@ namespace GoogleARCore.Examples.ObjectManipulation
                 Destroy(transform.GetChild(i).gameObject);
             }
 
+            placedObject = null;
         }
         public void DeleteSelectedObject()
         {
@@ -271,6 +294,8 @@ namespace GoogleARCore.Examples.ObjectManipulation
 
             // Set selected object to null
             ManipulationSystem.Instance.Deselect();
+
+            placedObject = null;
         }
     }
 

@@ -89,7 +89,7 @@ public class ArHintsManager: SingletonDestroyable<ArHintsManager>
 
     public bool ObjectsArePlaced()
     {
-        if (m_ObjectPlacer.PlacedObjectsCount > 0)
+        if (m_ObjectPlacer.placedObjectsCount > 0)
         {
             AlreadyPlacedAnObject = true;
             return true;

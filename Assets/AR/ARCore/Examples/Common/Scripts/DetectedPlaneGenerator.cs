@@ -22,6 +22,7 @@ namespace GoogleARCore.Examples.Common
 {
     using System.Collections.Generic;
     using GoogleARCore;
+    using GoogleARCore.Examples.ObjectManipulation;
     using UnityEngine;
 
     /// <summary>
@@ -42,6 +43,14 @@ namespace GoogleARCore.Examples.Common
         public List<DetectedPlaneVisualizer> _allPlanes = new List<DetectedPlaneVisualizer>();
 
         public bool planesAreVisible;
+        private ObjectPlacer m_ObjPlacer;
+
+        public Material planeMaterial;
+
+        private void Awake()
+        {
+            m_ObjPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
+        }
 
         public void Update()
         {
@@ -62,16 +71,24 @@ namespace GoogleARCore.Examples.Common
 
                 GameObject planeObject = Instantiate(DetectedPlanePrefab, Vector3.zero, Quaternion.identity, transform);
                 var ojectVisualizer = planeObject.GetComponent<DetectedPlaneVisualizer>();
-                ojectVisualizer.Initialize(_newPlanes[i], AppManager.Instance.planeColor, AppManager.Instance.planeTextureARCore);
+                ojectVisualizer.Initialize(
+                    _newPlanes[i],
+                    planeMaterial,
+                    AppManager.Instance.planeColor,
+                    AppManager.Instance.planeTextureARCore);
+
                 _allPlanes.Add(ojectVisualizer);
             }
 
             // Get all instantiated planes to set their visibility
             for (int i = 0; i < _allPlanes.Count; i++)
             {
-                if(_allPlanes[i] != null)
+                if (_allPlanes[i] != null)
                 {
                     _allPlanes[i].GetComponent<MeshRenderer>().enabled = planesAreVisible;
+
+                    if (m_ObjPlacer.placedObject != null && AppManager.Instance.addObjectInPlaneEffect)
+                        _allPlanes[i].GetComponent<MeshRenderer>().material.SetVector("_Position", m_ObjPlacer.placedObject.transform.position);
                 }
             }
         }
@@ -79,6 +96,20 @@ namespace GoogleARCore.Examples.Common
         public void SetVisibility(bool visible)
         {
             planesAreVisible = visible;
+        }
+        public void SetEffect(bool state)
+        {
+            for (int i = 0; i < _allPlanes.Count; i++)
+            {
+                if (_allPlanes[i] != null)
+                {
+                    planeMaterial = state ? AppManager.Instance.planeMaterialARCoreEffect : AppManager.Instance.planeMaterialARCoreDefault;
+                    _allPlanes[i].GetComponent<MeshRenderer>().material = planeMaterial;
+                    _allPlanes[i].GetComponent<MeshRenderer>().material.mainTexture = AppManager.Instance.planeTextureARCore;
+                    _allPlanes[i].GetComponent<MeshRenderer>().material.SetColor("_GridColor", AppManager.Instance.planeColor);
+                    _allPlanes[i].UpdateMeshAnyway();
+                }
+            }
         }
     }
 }

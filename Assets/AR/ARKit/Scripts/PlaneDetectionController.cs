@@ -56,7 +56,10 @@ namespace UnityEngine.XR.ARFoundation.Samples
         {
             planesAreVisible = visible;
         }
-
+        public void SetEffect(bool state)
+        {
+            planesAreVisible = state;
+        }
         /// <summary>
         /// Iterates over all the existing planes and activates
         /// or deactivates their <c>GameObject</c>s'.
@@ -67,8 +70,5 @@ namespace UnityEngine.XR.ARFoundation.Samples
             foreach (var plane in m_ARPlaneManager.trackables)
                 plane.gameObject.SetActive(value);
         }
-
-        
-
     }
 }
