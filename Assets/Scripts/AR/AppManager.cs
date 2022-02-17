@@ -141,6 +141,7 @@ public class AppManager : Singleton<AppManager>
         m_ARCorePlaneGenerator = GameObject.FindObjectOfType<DetectedPlaneGenerator>();
         m_ARKitPlaneGenerator = GameObject.FindObjectOfType<PlaneDetectionController>();
         m_ARCorePlaneGenerator.planeMaterial = planeMaterialARCoreDefault;
+        m_ARKitPlaneGenerator.planeMaterial = planeMaterialARKitDefault;
         // ----- MANIPULATION INITIALIZATION -----
         m_ExtraLights = GameObject.Find("Lights");
         m_ExtraLights.SetActive(false);

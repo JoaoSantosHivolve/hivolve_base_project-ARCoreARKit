@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GoogleARCore.Examples.ObjectManipulation;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
@@ -8,11 +9,14 @@ namespace UnityEngine.XR.ARFoundation.Samples
     public class PlaneDetectionController : MonoBehaviour
     {
         private ARPlaneManager m_ARPlaneManager;
+        private ObjectPlacer m_ObjPlacer;
         public bool planesAreVisible;
+        public Material planeMaterial;
 
         private void Awake()
         {
             m_ARPlaneManager = GameObject.FindObjectOfType<ARPlaneManager>();
+            m_ObjPlacer = GameObject.FindObjectOfType<ObjectPlacer>();
         }
 
         private void LateUpdate()
@@ -23,17 +27,23 @@ namespace UnityEngine.XR.ARFoundation.Samples
                 {
                     // Set visibility
                     plane.gameObject.GetComponent<MeshRenderer>().enabled = planesAreVisible;
-                    plane.gameObject.GetComponent<LineRenderer>().enabled = planesAreVisible;
+                    //plane.gameObject.GetComponent<LineRenderer>().enabled = planesAreVisible;
 
                     // Set color
                     var color = AppManager.Instance.planeColor;
-                    plane.gameObject.GetComponent<MeshRenderer>().material.color = color;
-                    plane.gameObject.GetComponent<LineRenderer>().startColor = color;
-                    plane.gameObject.GetComponent<LineRenderer>().endColor = color;
+                    plane.gameObject.GetComponent<MeshRenderer>().material = planeMaterial;
+                    plane.gameObject.GetComponent<MeshRenderer>().material.SetColor("_Color", color);
+                    //plane.gameObject.GetComponent<LineRenderer>().startColor = color;
+                    //plane.gameObject.GetComponent<LineRenderer>().endColor = color;
 
                     // Set texture
                     var texture = AppManager.Instance.planeTextureARKit;
                     plane.gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
+
+                    if (m_ObjPlacer.placedObject != null && AppManager.Instance.addObjectInPlaneEffect)
+                    {
+                        plane.gameObject.GetComponent<MeshRenderer>().material.SetVector("_Position", m_ObjPlacer.placedObject.transform.position);
+                    }
                 }
             }
         }
@@ -58,7 +68,7 @@ namespace UnityEngine.XR.ARFoundation.Samples
         }
         public void SetEffect(bool state)
         {
-            planesAreVisible = state;
+            planeMaterial = state ? AppManager.Instance.planeMaterialARKitEffect : AppManager.Instance.planeMaterialARKitDefault;
         }
         /// <summary>
         /// Iterates over all the existing planes and activates
